@@ -1,0 +1,85 @@
+@XaTanThuanDong.Api_HostAddress = http://localhost:5116
+
+# ==========================
+# PUBLIC (Người dân) - KHÔNG cần đăng nhập
+# Base: /api/public
+# ==========================
+
+### Lấy danh mục tin tức
+GET {{XaTanThuanDong.Api_HostAddress}}/api/public/categories
+Accept: application/json
+
+### Danh sách bài viết (tin tức)
+GET {{XaTanThuanDong.Api_HostAddress}}/api/public/articles
+Accept: application/json
+
+### Chi tiết bài viết theo slug
+GET {{XaTanThuanDong.Api_HostAddress}}/api/public/articles/thong-bao-mau
+Accept: application/json
+
+### Danh sách thủ tục hành chính đang hoạt động
+GET {{XaTanThuanDong.Api_HostAddress}}/api/public/services/procedures
+Accept: application/json
+
+### Nộp hồ sơ thủ tục (Public)
+POST {{XaTanThuanDong.Api_HostAddress}}/api/public/services/applications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "serviceProcedureId": 1,
+  "applicantName": "Nguyễn Văn A",
+  "applicantEmail": "a@gmail.com",
+  "applicantPhone": "0909000001",
+  "address": "Tân Thuận Đông",
+  "attachmentUrl": null
+}
+
+### Tra cứu trạng thái hồ sơ theo Id (Public)
+GET {{XaTanThuanDong.Api_HostAddress}}/api/public/services/applications/1
+Accept: application/json
+
+
+# ==========================
+# ADMIN - CẦN đăng nhập (JWT Bearer)
+# Base: /api/admin
+# ==========================
+
+# 1) Login lấy token ở /api/auth/login
+# 2) Dán token vào biến @adminToken
+@adminToken = REPLACE_WITH_JWT_TOKEN
+
+### (Admin) Danh sách hồ sơ thủ tục
+GET {{XaTanThuanDong.Api_HostAddress}}/api/admin/services/applications
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### (Admin) Cập nhật trạng thái hồ sơ
+PUT {{XaTanThuanDong.Api_HostAddress}}/api/admin/services/applications/1/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Approved",
+  "note": "Đã tiếp nhận và duyệt hồ sơ"
+}
+
+### (Admin) Danh sách bài viết
+GET {{XaTanThuanDong.Api_HostAddress}}/api/admin/content/articles
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+# ==========================
+# AUTH (Đăng nhập cho Admin/Editor)
+# Base: /api/auth
+# ==========================
+
+### Đăng nhập lấy JWT
+POST {{XaTanThuanDong.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "admin",
+  "password": "Admin@123"
+}

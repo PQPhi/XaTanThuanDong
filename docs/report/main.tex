@@ -1,0 +1,259 @@
+% XaTanThuanDong - Project Report (single-file)
+% Compile: xelatex main.tex  (recommended) or pdflatex
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+
+\setmainfont{Times New Roman}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codeborder}{RGB}{220,220,220}
+\lstdefinestyle{appcode}{
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeborder},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue,
+  pdftitle={Báo cáo đồ án - XaTanThuanDong},
+}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection.}{0.6em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Xa Tân Thuận Đông}
+\rhead{Báo cáo dự án}
+\cfoot{\thepage}
+
+\begin{document}
+
+% -------------------- Cover --------------------
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+  {\Large \textbf{BÁO CÁO ĐỒ ÁN}}\\[0.4cm]
+  {\LARGE \textbf{Website Xã Tân Thuận Đông}}\\[0.8cm]
+
+  \vspace{0.4cm}
+  \begin{tabular}{>{\bfseries}p{5cm}p{9cm}}
+    Sinh viên thực hiện: & Tran Nguyen Phat Dat \\ 
+    MSSV: & 0023411535 \\ 
+    Dự án: & XaTanThuanDong (Frontend + Backend) \\ 
+    Công nghệ: & React (Vite), .NET 8 Web API, EF Core \\ 
+    Ngày báo cáo: & 24/03/2026 \\
+  \end{tabular}
+
+  \vfill
+  {\large \textit{Tài liệu được tổng hợp từ cấu trúc source trong workspace:}\\
+  \texttt{d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong}}
+
+  \vspace*{1.2cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% -------------------- 1. Overview --------------------
+\section{Tổng quan}
+Dự án \textbf{XaTanThuanDong} là một hệ thống website cung cấp thông tin và dịch vụ hành chính công cho \textbf{Xã Tân Thuận Đông}. Hệ thống gồm:
+\begin{itemize}[leftmargin=1.2cm]
+  \item \textbf{Backend}: ASP.NET Core 8 Web API, Entity Framework Core, xác thực JWT, phân quyền Admin.
+  \item \textbf{Frontend}: React + Vite, giao diện người dùng (public) và khu vực quản trị (admin).
+\end{itemize}
+
+\subsection{Mục tiêu}
+\begin{itemize}[leftmargin=1.2cm]
+  \item Cung cấp tin tức, thông báo, nội dung giới thiệu địa phương.
+  \item Cung cấp danh sách dịch vụ, thủ tục, và tiếp nhận hồ sơ đăng ký dịch vụ (service application).
+  \item Khu vực quản trị quản lý: người dùng, nội dung (bài viết, danh mục), dịch vụ, dashboard thống kê.
+\end{itemize}
+
+% -------------------- 2. Structure --------------------
+\section{Cấu trúc thư mục (tóm tắt)}
+\subsection{Root}
+\begin{lstlisting}[style=appcode]
+XaTanThuanDong.sln
+backend/
+  XaTanThuanDong.Api/
+frontend/
+  xatanthuandong-web/
+\end{lstlisting}
+
+\subsection{Backend: \texttt{backend/XaTanThuanDong.Api}}
+Có các thành phần chính: Controllers, Data (DbContext + Seed), Dtos, Models, Services, Validators, Middlewares, Migrations, Uploads.
+
+Controllers quan trọng:
+\begin{itemize}[leftmargin=1.2cm]
+  \item \texttt{AuthController.cs}: đăng nhập/đăng ký, cấp JWT.
+  \item \texttt{PublicContentController.cs}: API public cho bài viết, danh mục.
+  \item \texttt{PublicServicesController.cs}: API public cho dịch vụ, thủ tục.
+  \item \texttt{Admin*Controller.cs}: API quản trị (dashboard, users, services, content).
+\end{itemize}
+
+\subsection{Frontend: \texttt{frontend/xatanthuandong-web}}
+Tổ chức theo standard Vite + React:
+\begin{itemize}[leftmargin=1.2cm]
+  \item \texttt{src/pages}: các trang public (Home, News list/detail, Services, About, Contact, Gallery) và admin.
+  \item \texttt{src/lib}: helper gọi API và auth.
+  \item \texttt{vite.config.js}: cấu hình dev server (proxy API trong dev).
+\end{itemize}
+
+% -------------------- 3. Architecture --------------------
+\section{Kiến trúc hệ thống}
+\subsection{Luồng tổng quan}
+\begin{enumerate}[leftmargin=1.2cm]
+  \item Người dùng truy cập frontend (React).
+  \item Frontend gọi các endpoint public để lấy tin tức/dịch vụ.
+  \item Admin đăng nhập, nhận JWT, sau đó gọi các endpoint admin với header Authorization.
+  \item Backend truy cập CSDL qua EF Core (DbContext), trả JSON.
+\end{enumerate}
+
+\subsection{Công nghệ}
+\begin{longtable}{p{5.2cm}p{9.2cm}}
+\toprule
+\textbf{Hạng mục} & \textbf{Công nghệ} \\
+\midrule
+Backend & ASP.NET Core 8 Web API, EF Core Migrations, FluentValidation, JWT, Middleware xử lý lỗi \\
+Frontend & React, Vite, React Router, Axios (thông qua \texttt{src/lib/api.js}) \\
+CSDL & (Theo cấu hình dự án) EF Core, Migration \texttt{InitialCreate} \\
+\bottomrule
+\end{longtable}
+
+% -------------------- 4. Database --------------------
+\section{Cơ sở dữ liệu (mô hình thực thể)}
+Dựa theo thư mục \texttt{Models/} trong backend, các thực thể chính gồm:
+\begin{itemize}[leftmargin=1.2cm]
+  \item \textbf{AppUser}: người dùng hệ thống (admin/user).
+  \item \textbf{Category}: danh mục tin.
+  \item \textbf{Article}: bài viết/tin tức.
+  \item \textbf{Comment}: bình luận (nếu sử dụng).
+  \item \textbf{Media}: tài nguyên media (ảnh/file).
+  \item \textbf{ServiceProcedure}: thủ tục dịch vụ.
+  \item \textbf{ServiceApplication}: hồ sơ đăng ký/đơn yêu cầu dịch vụ.
+  \item \textbf{AuditLog}: log thao tác (nếu dùng).
+\end{itemize}
+
+\subsection{Bảng tóm tắt entities}
+\begin{longtable}{p{4.2cm}p{10.2cm}}
+\toprule
+\textbf{Entity} & \textbf{Mô tả} \\
+\midrule
+AppUser & Lưu thông tin tài khoản, role, password hash, ... \\
+Category & Danh mục nội dung/bài viết \\
+Article & Nội dung tin tức, slug, title, summary, body, thumbnail, publishedAt \\
+ServiceProcedure & Thông tin thủ tục: tên, mô tả, hồ sơ cần, thời gian, lệ phí,... \\
+ServiceApplication & Yêu cầu dịch vụ của người dân: thông tin liên hệ, trạng thái xử lý, đính kèm,... \\
+Media & Quản lý file/ảnh upload \\
+AuditLog & Ghi nhận lịch sử thao tác/quản trị \\
+Comment & Bình luận theo bài viết \\
+\bottomrule
+\end{longtable}
+
+\textit{Ghi chú: Chi tiết cột (columns), quan hệ (FK) và index được định nghĩa trong Migration: \texttt{Migrations/20260323004718\_InitialCreate.cs}.}
+
+% -------------------- 5. API --------------------
+\section{API (tóm tắt endpoint)}
+\subsection{Public API}
+Các endpoint public nằm ở \texttt{PublicContentController.cs} và \texttt{PublicServicesController.cs}. Ví dụ:
+\begin{itemize}[leftmargin=1.2cm]
+  \item \texttt{GET /api/public/categories} --- lấy danh mục.
+  \item \texttt{GET /api/public/articles} --- danh sách bài viết (hỗ trợ query như \texttt{q}, \texttt{categoryId}).
+  \item \texttt{GET /api/public/articles/\{slug\}} --- chi tiết bài viết.
+  \item \texttt{GET /api/public/services} --- danh sách dịch vụ/thủ tục.
+\end{itemize}
+
+\subsection{Auth API}
+\texttt{AuthController.cs} cung cấp luồng đăng nhập/đăng ký và cấp token JWT.
+
+\subsection{Admin API}
+Các endpoint quản trị (yêu cầu JWT + role phù hợp):
+\begin{itemize}[leftmargin=1.2cm]
+  \item \texttt{/api/admin/dashboard} --- số liệu thống kê.
+  \item \texttt{/api/admin/users} --- quản lý user.
+  \item \texttt{/api/admin/content} --- quản lý categories/articles/media.
+  \item \texttt{/api/admin/services} --- quản lý dịch vụ/thủ tục/hồ sơ.
+\end{itemize}
+
+% -------------------- 6. Frontend pages --------------------
+\section{Frontend (các trang chính)}
+Các trang nằm ở \texttt{frontend/xatanthuandong-web/src/pages}.
+
+\begin{longtable}{p{5.2cm}p{9.2cm}}
+\toprule
+\textbf{Trang} & \textbf{Mô tả}\\
+\midrule
+HomePage.jsx & Trang chủ, giới thiệu nhanh và các block nội dung \\
+NewsListPage.jsx & Danh sách tin tức, tìm kiếm theo từ khóa/danh mục \\
+NewsDetailPage.jsx & Chi tiết bài viết theo slug \\
+ServicesPage.jsx & Danh sách dịch vụ/thủ tục \\
+AboutPage.jsx & Giới thiệu \\
+ContactPage.jsx & Liên hệ \\
+GalleryPage.jsx & Thư viện hình ảnh \\
+Admin/* & Khu vực quản trị (tùy triển khai) \\
+\bottomrule
+\end{longtable}
+
+% -------------------- 7. Run instructions --------------------
+\section{Hướng dẫn chạy dự án (Development)}
+\subsection{Yêu cầu}
+\begin{itemize}[leftmargin=1.2cm]
+  \item .NET SDK 8.x
+  \item Node.js (khuyến nghị LTS)
+\end{itemize}
+
+\subsection{Chạy Backend}
+Mở solution \texttt{XaTanThuanDong.sln} hoặc chạy project API.
+
+Chạy API (ví dụ):
+\begin{lstlisting}[style=appcode]
+cd backend/XaTanThuanDong.Api
+# dotnet run
+\end{lstlisting}
+
+Cấu hình port xem trong \texttt{Properties/launchSettings.json}. Mặc định backend chạy: \texttt{http://localhost:5168} (phụ thuộc launch settings).
+
+\subsection{Chạy Frontend}
+\begin{lstlisting}[style=appcode]
+cd frontend/xatanthuandong-web
+# npm install
+# npm run dev
+\end{lstlisting}
+
+Trong dev, frontend nên gọi API theo dạng tương đối \texttt{/api/...} và cấu hình proxy trong \texttt{vite.config.js} để trỏ về backend.
+
+% -------------------- 8. Notes --------------------
+\section{Ghi chú triển khai và bảo mật}
+\begin{itemize}[leftmargin=1.2cm]
+  \item Không commit secret (JWT secret, connection string production).
+  \item Bật HTTPS, cấu hình CORS đúng domain production.
+  \item Với upload: giới hạn loại file, giới hạn dung lượng, đặt tên file an toàn.
+  \item Ghi log và xử lý exception tập trung qua middleware.
+\end{itemize}
+
+\section{Kết luận}
+Tài liệu này gom tóm tắt cấu trúc và chức năng chính của hệ thống. Có thể mở rộng phần báo cáo bằng cách bổ sung: ERD chi tiết, ảnh chụp màn hình UI, test case, và kết quả triển khai.
+
+\end{document}
