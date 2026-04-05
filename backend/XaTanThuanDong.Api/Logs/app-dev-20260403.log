@@ -1,0 +1,39 @@
+[2026-04-03 23:28:03.774 +07:00 ERR]  Microsoft.EntityFrameworkCore.Database.Command Failed executing DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Media] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(255) NOT NULL,
+    [Url] nvarchar(500) NOT NULL,
+    [ContentType] nvarchar(100) NOT NULL,
+    [Size] bigint NOT NULL,
+    [Topic] nvarchar(450) NULL,
+    [UploadedByUserId] nvarchar(450) NOT NULL,
+    [UploadedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_Media] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Media_AspNetUsers_UploadedByUserId] FOREIGN KEY ([UploadedByUserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
+);
+[2026-04-03 23:32:45.636 +07:00 ERR]  Microsoft.EntityFrameworkCore.Database.Command Failed executing DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Media] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(255) NOT NULL,
+    [Url] nvarchar(500) NOT NULL,
+    [ContentType] nvarchar(100) NOT NULL,
+    [Size] bigint NOT NULL,
+    [Topic] nvarchar(450) NULL,
+    [UploadedByUserId] nvarchar(450) NOT NULL,
+    [UploadedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_Media] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Media_AspNetUsers_UploadedByUserId] FOREIGN KEY ([UploadedByUserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
+);
+[2026-04-03 23:33:34.506 +07:00 ERR]  Microsoft.EntityFrameworkCore.Database.Command Failed executing DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Media] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(255) NOT NULL,
+    [Url] nvarchar(500) NOT NULL,
+    [ContentType] nvarchar(100) NOT NULL,
+    [Size] bigint NOT NULL,
+    [Topic] nvarchar(450) NULL,
+    [UploadedByUserId] nvarchar(450) NOT NULL,
+    [UploadedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_Media] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Media_AspNetUsers_UploadedByUserId] FOREIGN KEY ([UploadedByUserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
+);

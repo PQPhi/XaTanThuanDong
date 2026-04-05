@@ -11,6 +11,7 @@ using XaTanThuanDong.Api.Middlewares;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Logging
@@ -116,6 +117,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+
 var app = builder.Build();
 
 // Auto migrate + seed
@@ -194,5 +196,6 @@ app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/public-api"), publicApp
     // Map controllers for this branch
     publicApp.UseEndpoints(endpoints => endpoints.MapControllers());
 });
+
 
 app.Run();

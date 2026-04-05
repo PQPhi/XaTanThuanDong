@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj": {}
+    "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj": {}
   },
   "projects": {
-    "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj": {
+    "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
+        "projectUniqueName": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
         "projectName": "XaTanThuanDong.Api",
-        "projectPath": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
+        "projectPath": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\obj\\",
+        "outputPath": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -116,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -5195,11 +5195,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
+      "projectUniqueName": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
       "projectName": "XaTanThuanDong.Api",
-      "projectPath": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
+      "projectPath": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\XaTanThuanDong.Api.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\obj\\",
+      "outputPath": "D:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong\\backend\\XaTanThuanDong.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5304,7 +5304,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
