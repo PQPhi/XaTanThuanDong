@@ -175,3 +175,4 @@ D:\Tran Nguyen Phat Dat-0023411535\github\XaTanThuanDong\backend\XaTanThuanDong.
 D:\Tran Nguyen Phat Dat-0023411535\github\XaTanThuanDong\backend\XaTanThuanDong.Api\obj\Debug\net8.0\XaTanThuanDong.Api.pdb
 D:\Tran Nguyen Phat Dat-0023411535\github\XaTanThuanDong\backend\XaTanThuanDong.Api\obj\Debug\net8.0\XaTanThuanDong.Api.genruntimeconfig.cache
 D:\Tran Nguyen Phat Dat-0023411535\github\XaTanThuanDong\backend\XaTanThuanDong.Api\obj\Debug\net8.0\ref\XaTanThuanDong.Api.dll
+D:\Tran Nguyen Phat Dat-0023411535\github\XaTanThuanDong\backend\XaTanThuanDong.Api\bin\Debug\net8.0\XaTanThuanDong.Api.staticwebassets.runtime.json

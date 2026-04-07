@@ -17,20 +17,20 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Leader> Leaders => Set<Leader>();
 
-    
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         // Dùng tên bảng tiếng Việt (dbo) theo DB hiện có
-builder.Entity<Category>().ToTable("DanhMuc");
-builder.Entity<Article>().ToTable("BaiViet");
-builder.Entity<Comment>().ToTable("BinhLuan");
-builder.Entity<Media>().ToTable("Media");
-builder.Entity<ServiceProcedure>().ToTable("ThuTucHanhChinh");
-builder.Entity<ServiceApplication>().ToTable("HoSoDichVu");
-builder.Entity<AuditLog>().ToTable("LichSu");
-builder.Entity<Leader>().ToTable("LanhDao");
+        //builder.Entity<Category>().ToTable("DanhMuc");
+        //builder.Entity<Article>().ToTable("BaiViet");
+        //builder.Entity<Comment>().ToTable("BinhLuan");
+        //builder.Entity<Media>().ToTable("Media");
+        //builder.Entity<ServiceProcedure>().ToTable("ThuTucHanhChinh");
+        //builder.Entity<ServiceApplication>().ToTable("HoSoDichVu");
+        //builder.Entity<AuditLog>().ToTable("LichSu");
+        //builder.Entity<Leader>().ToTable("LanhDao");
 
         builder.Entity<Category>(e =>
         {

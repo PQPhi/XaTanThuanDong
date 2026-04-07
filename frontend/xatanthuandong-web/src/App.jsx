@@ -18,7 +18,7 @@ import AdminArticlesPage from './pages/admin/AdminArticlesPage.jsx'
 import AdminServicesPage from './pages/admin/AdminServicesPage.jsx'
 import AdminLeadersPage from './pages/admin/AdminLeadersPage.jsx'
 
-import './App.css'
+import './App.scss'
 
 export default function App() {
   return (

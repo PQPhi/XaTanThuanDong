@@ -149,17 +149,21 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
 // Hide admin API completely (citizen-only deployment)
-app.Use(async (ctx, next) =>
+// Hide admin API only in Production (citizen-only deployment)
+if (app.Environment.IsProduction())
 {
-    if (ctx.Request.Path.StartsWithSegments("/api/admin") ||
-        ctx.Request.Path.StartsWithSegments("/public-api/api/admin"))
+    app.Use(async (ctx, next) =>
     {
-        ctx.Response.StatusCode = StatusCodes.Status404NotFound;
-        return;
-    }
+        if (ctx.Request.Path.StartsWithSegments("/api/admin") ||
+            ctx.Request.Path.StartsWithSegments("/public-api/api/admin"))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
 
-    await next();
-});
+        await next();
+    });
+}
 
 // Global routing/auth so the original routes continue to work.
 app.UseRouting();

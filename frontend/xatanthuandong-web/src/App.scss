@@ -1,0 +1,247 @@
+/* ===== HEADER ===== */
+.top-header {
+  background: linear-gradient(90deg, #0d6efd, #00c6ff);
+  color: white;
+  padding: 6px 0;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* MENU */
+.main-menu {
+  background: white;
+  border-bottom: 2px solid #eee;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+
+  a {
+    padding: 14px 16px;
+    display: inline-block;
+    text-decoration: none;
+    color: #222;
+    font-weight: 500;
+    position: relative;
+    transition: 0.3s;
+  }
+
+  /* gạch chân animation */
+  a::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background: #0d6efd;
+    transition: 0.3s;
+    transform: translateX(-50%);
+  }
+
+  a:hover {
+    color: #0d6efd;
+  }
+
+  a:hover::after {
+    width: 70%;
+  }
+}
+
+/* ===== BANNER ===== */
+.banner-slide {
+  height: 420px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+
+  /* zoom nhẹ background */
+  animation: zoomBg 20s infinite alternate;
+}
+
+@keyframes zoomBg {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.banner-slide .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.banner-slide h1 {
+  color: white;
+  font-size: 36px;
+  animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== MARQUEE (CHỮ CHẠY MƯỢT) ===== */
+.marquee {
+  background: linear-gradient(90deg, red, orange);
+  color: white;
+  overflow: hidden;
+  font-weight: 500;
+}
+
+.marquee-content {
+  white-space: nowrap;
+  animation: marquee 18s linear infinite;
+  padding: 10px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(100%) }
+  to { transform: translateX(-100%) }
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 10px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    padding: 10px;
+    border-radius: 6px;
+    transition: 0.3s;
+  }
+
+  li:hover {
+    background: #e9f2ff;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+  }
+
+  a:hover {
+    color: #0d6efd;
+  }
+}
+
+/* ===== NEWS CARD ===== */
+.news-card {
+  display: block;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  transition: all 0.35s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: 0.4s;
+  }
+
+  /* zoom ảnh */
+  &:hover img {
+    transform: scale(1.1);
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  }
+}
+
+/* ===== CARD NỔI VIP ===== */
+.stat-card {
+  background: white;
+  border-radius: 14px;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 20px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+  /* ánh sáng chạy */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255,255,255,0.6),
+      transparent
+    );
+    transform: skewX(-25deg);
+  }
+
+  &:hover::after {
+    animation: shine 0.8s;
+  }
+
+  @keyframes shine {
+    100% {
+      left: 125%;
+    }
+  }
+
+  /* viền gradient */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(45deg, #0d6efd, #00c6ff);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: 0.3s;
+  }
+
+  &:hover {
+    transform: translateY(-12px) scale(1.04);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ===== FADE IN ===== */
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}

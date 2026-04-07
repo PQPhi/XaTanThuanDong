@@ -11,6 +11,11 @@ namespace XaTanThuanDong.Api.Controllers;
 [ApiController]
 [Route("api/admin/content")]
 [Authorize(Roles = "Admin,Editor")]
+public sealed class UploadMediaRequest
+{
+    public IFormFile File { get; set; } = default!;
+    public string? Topic { get; set; }
+}
 public class AdminContentController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -261,6 +266,7 @@ public class AdminContentController : ControllerBase
     [RequestSizeLimit(20_000_000)]
     public async Task<ActionResult<object>> UploadMedia([FromForm] IFormFile file, [FromForm] string? topic)
     {
+        
         if (file is null || file.Length == 0) return BadRequest(new { message = "File không hợp lệ." });
 
         var user = await _userManager.GetUserAsync(User);
@@ -304,8 +310,10 @@ public class AdminContentController : ControllerBase
     }
 
     [HttpGet("media")]
-    public async Task<ActionResult<IEnumerable<object>>> ListMedia([FromQuery] string? topic)
+    public async Task<ActionResult<object>> UploadMedia([FromForm] UploadMediaRequest req)
     {
+        var file = req.File;
+        var topic = req.Topic;
         var q = _db.Media.AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(topic))
             q = q.Where(x => x.Topic == topic);
