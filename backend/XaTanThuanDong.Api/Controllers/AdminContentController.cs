@@ -8,14 +8,15 @@ using XaTanThuanDong.Api.Models;
 
 namespace XaTanThuanDong.Api.Controllers;
 
-[ApiController]
-[Route("api/admin/content")]
-[Authorize(Roles = "Admin,Editor")]
 public sealed class UploadMediaRequest
 {
     public IFormFile File { get; set; } = default!;
     public string? Topic { get; set; }
 }
+
+[ApiController]
+[Route("api/admin/content")]
+[Authorize(Roles = "Admin,Editor")]
 public class AdminContentController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -99,6 +100,26 @@ public class AdminContentController : ControllerBase
             .ToListAsync();
 
         return Ok(data);
+    }
+
+    [HttpGet("articles/{id:int}")]
+    public async Task<ActionResult<ArticleDetailDto>> GetArticle([FromRoute] int id)
+    {
+        var a = await _db.Articles.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (a is null) return NotFound();
+
+        return Ok(new ArticleDetailDto(
+            a.Id,
+            a.CategoryId,
+            a.Title,
+            a.Slug,
+            a.Summary,
+            a.ContentHtml,
+            a.Status,
+            a.PublishedAtUtc,
+            a.ThumbnailUrl));
     }
 
     [HttpPost("articles")]
@@ -264,9 +285,11 @@ public class AdminContentController : ControllerBase
 
     [HttpPost("media/upload")]
     [RequestSizeLimit(20_000_000)]
-    public async Task<ActionResult<object>> UploadMedia([FromForm] IFormFile file, [FromForm] string? topic)
+    public async Task<ActionResult<object>> UploadMedia([FromForm] UploadMediaRequest req)
     {
-        
+        var file = req.File;
+        var topic = req.Topic;
+
         if (file is null || file.Length == 0) return BadRequest(new { message = "File không hợp lệ." });
 
         var user = await _userManager.GetUserAsync(User);
@@ -310,10 +333,8 @@ public class AdminContentController : ControllerBase
     }
 
     [HttpGet("media")]
-    public async Task<ActionResult<object>> UploadMedia([FromForm] UploadMediaRequest req)
+    public async Task<ActionResult<object>> ListMedia([FromQuery] string? topic)
     {
-        var file = req.File;
-        var topic = req.Topic;
         var q = _db.Media.AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(topic))
             q = q.Where(x => x.Topic == topic);
