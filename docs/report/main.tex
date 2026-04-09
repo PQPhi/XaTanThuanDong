@@ -1,5 +1,5 @@
-% XaTanThuanDong - Project Report (single-file)
-% Compile: xelatex main.tex  (recommended) or pdflatex
+% XaTanThuanDong - Full report
+% Compile with: xelatex main.tex
 \documentclass[12pt,a4paper]{article}
 
 \usepackage[a4paper,margin=2.2cm]{geometry}
@@ -16,11 +16,18 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{caption}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{float}
 
 \setmainfont{Times New Roman}
+\setstretch{1.35}
 
 \definecolor{codebg}{RGB}{248,248,248}
 \definecolor{codeborder}{RGB}{220,220,220}
+\definecolor{heading}{RGB}{20,40,90}
+
 \lstdefinestyle{appcode}{
   backgroundcolor=\color{codebg},
   frame=single,
@@ -29,6 +36,7 @@
   breaklines=true,
   columns=fullflexible,
   keepspaces=true,
+  showstringspaces=false,
 }
 
 \hypersetup{
@@ -39,221 +47,1223 @@
   pdftitle={Báo cáo đồ án - XaTanThuanDong},
 }
 
-\titleformat{\section}{\Large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\section}{\Large\bfseries\color{heading}}{\thesection.}{0.6em}{}
 \titleformat{\subsection}{\large\bfseries}{\thesubsection.}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection.}{0.6em}{}
 
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{Xa Tân Thuận Đông}
-\rhead{Báo cáo dự án}
+\rhead{Báo cáo hệ thống}
 \cfoot{\thepage}
+\setlength{\headheight}{15.1pt}
+
+\renewcommand{\listfigurename}{Danh mục hình}
+
+\newcommand{\figureplaceholder}[2]{
+  \begin{figure}[H]
+    \centering
+    \fbox{
+      \begin{minipage}[c][5.2cm][c]{0.9\linewidth}
+        \centering
+        \textbf{CHO CHEN HINH MINH HOA}
+      \end{minipage}
+    }
+    \caption{#1}
+    \label{#2}
+  \end{figure}
+}
 
 \begin{document}
 
-% -------------------- Cover --------------------
 \begin{titlepage}
   \centering
-  \vspace*{1.5cm}
-  {\Large \textbf{BÁO CÁO ĐỒ ÁN}}\\[0.4cm]
-  {\LARGE \textbf{Website Xã Tân Thuận Đông}}\\[0.8cm]
+  \vspace*{1.4cm}
+  {\Large \textbf{TRƯỜNG ĐẠI HỌC}}\\[0.2cm]
+  {\large Khoa Công nghệ Thông tin}\\[1.2cm]
 
-  \vspace{0.4cm}
-  \begin{tabular}{>{\bfseries}p{5cm}p{9cm}}
-    Sinh viên thực hiện: & Tran Nguyen Phat Dat \\ 
-    MSSV: & 0023411535 \\ 
-    Dự án: & XaTanThuanDong (Frontend + Backend) \\ 
-    Công nghệ: & React (Vite), .NET 8 Web API, EF Core \\ 
-    Ngày báo cáo: & 24/03/2026 \\
+  {\LARGE \textbf{BÁO CÁO ĐỒ ÁN TỐT NGHIỆP}}\\[0.5cm]
+  {\LARGE \textbf{HỆ THỐNG CỔNG THÔNG TIN XÃ TÂN THUẬN ĐÔNG}}\\[1.0cm]
+
+  \begin{tabular}{>{\bfseries}p{5cm}p{8.8cm}}
+    Tên dự án: & XaTanThuanDong \\
+    Mã nguồn khảo sát: & Backend API + Frontend Web + Frontend Portal \\
+    Công nghệ chính: & ASP.NET Core 8, EF Core, Identity, JWT, React, Vite \\
+    Hình thức báo cáo: & Báo cáo phân tích thiết kế, cài đặt và kiểm thử \\
+    Ngày hoàn thành: & 09/04/2026 \\
   \end{tabular}
 
   \vfill
-  {\large \textit{Tài liệu được tổng hợp từ cấu trúc source trong workspace:}\\
-  \texttt{d:\\Tran Nguyen Phat Dat-0023411535\\github\\XaTanThuanDong}}
-
-  \vspace*{1.2cm}
+  {\large \textit{Lưu ý: Báo cáo được xây dựng dựa trên toàn bộ mã nguồn hiện có trong workspace,}\
+  \textit{không thay đổi logic ứng dụng.}}
 \end{titlepage}
 
 \tableofcontents
 \newpage
+\addcontentsline{toc}{section}{Danh mục hình}
+\listoffigures
+\newpage
 
-% -------------------- 1. Overview --------------------
-\section{Tổng quan}
-Dự án \textbf{XaTanThuanDong} là một hệ thống website cung cấp thông tin và dịch vụ hành chính công cho \textbf{Xã Tân Thuận Đông}. Hệ thống gồm:
-\begin{itemize}[leftmargin=1.2cm]
-  \item \textbf{Backend}: ASP.NET Core 8 Web API, Entity Framework Core, xác thực JWT, phân quyền Admin.
-  \item \textbf{Frontend}: React + Vite, giao diện người dùng (public) và khu vực quản trị (admin).
+\section{Giới thiệu}
+
+\subsection{Bối cảnh hình thành đề tài}
+Chuyển đổi số trong cơ quan hành chính cấp cơ sở là nhu cầu cấp thiết nhằm nâng cao chất lượng phục vụ người dân, giảm thời gian xử lý hồ sơ và minh bạch thông tin. Trong thực tế vận hành tại cấp xã, các nhu cầu thường xuyên bao gồm:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Công bố thông báo, tin tức địa phương theo danh mục và theo thời gian.
+  \item Cung cấp danh mục dịch vụ công và hướng dẫn hồ sơ, lệ phí, thời gian xử lý.
+  \item Tiếp nhận yêu cầu trực tuyến, theo dõi trạng thái hồ sơ và phản hồi công dân.
+  \item Quản trị nội dung tập trung với cơ chế phân quyền rõ ràng giữa các vai trò cán bộ.
 \end{itemize}
 
-\subsection{Mục tiêu}
-\begin{itemize}[leftmargin=1.2cm]
-  \item Cung cấp tin tức, thông báo, nội dung giới thiệu địa phương.
-  \item Cung cấp danh sách dịch vụ, thủ tục, và tiếp nhận hồ sơ đăng ký dịch vụ (service application).
-  \item Khu vực quản trị quản lý: người dùng, nội dung (bài viết, danh mục), dịch vụ, dashboard thống kê.
+Dự án \textbf{XaTanThuanDong} ra đời để giải quyết trọn vẹn các nhu cầu trên theo định hướng triển khai thực tế tại địa phương. Hệ thống không chỉ dừng ở website thông tin một chiều mà còn mở rộng thành nền tảng tương tác hai chiều giữa người dân và chính quyền cấp xã.
+
+\subsection{Bài toán đặt ra}
+Bài toán nghiệp vụ tổng thể có thể mô tả như sau:
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Xây dựng cổng thông tin công khai, dễ tra cứu, thân thiện trên cả thiết bị di động và máy tính.
+  \item Xây dựng khu vực quản trị để tạo/sửa/xóa nội dung, quản lý danh mục, duyệt bình luận, quản lý media và xử lý hồ sơ dịch vụ.
+  \item Đảm bảo an toàn ở mức ứng dụng web hiện đại: xác thực, phân quyền, kiểm tra dữ liệu đầu vào, ghi log và xử lý lỗi tập trung.
+  \item Đảm bảo khả năng mở rộng trong tương lai: thêm thủ tục, thêm chuyên mục, tích hợp cổng dịch vụ công cấp trên.
+\end{enumerate}
+
+\subsection{Mục tiêu của hệ thống}
+Mục tiêu tổng quát của đồ án là thiết kế và hiện thực một hệ thống web đầy đủ ba lớp gồm giao diện người dùng, tầng dịch vụ API và tầng dữ liệu. Từ mục tiêu tổng quát, hệ thống cụ thể hóa thành các mục tiêu sau:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Mục tiêu chức năng}: cung cấp đầy đủ nhóm chức năng công khai và chức năng quản trị theo vai trò.
+  \item \textbf{Mục tiêu kỹ thuật}: áp dụng .NET 8 Web API, Entity Framework Core, Identity, JWT và React theo chuẩn hiện đại.
+  \item \textbf{Mục tiêu vận hành}: khởi tạo dữ liệu mẫu tự động, hỗ trợ chạy môi trường phát triển nhanh, có tài liệu endpoint và có khả năng mở rộng triển khai production.
+  \item \textbf{Mục tiêu chất lượng}: phản hồi API rõ ràng, lỗi được chuẩn hóa, giao diện phản hồi tốt trên nhiều kích thước màn hình.
 \end{itemize}
 
-% -------------------- 2. Structure --------------------
-\section{Cấu trúc thư mục (tóm tắt)}
-\subsection{Root}
+\subsection{Phạm vi triển khai}
+Phạm vi của báo cáo và hệ thống bao gồm:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Backend}: dự án \texttt{backend/XaTanThuanDong.Api}, triển khai API cho public và admin, có middleware xử lý lỗi, có seed dữ liệu ban đầu.
+  \item \textbf{Frontend người dân}: dự án \texttt{frontend/xatanthuandong-web}, cung cấp trang chủ, tin tức, dịch vụ, thư viện, liên hệ và một phần giao diện admin rút gọn.
+  \item \textbf{Frontend portal quản trị}: dự án \texttt{frontend/xatanthuandong-portal}, tập trung vào các màn hình CRUD quản trị chuyên sâu.
+  \item \textbf{Cơ sở dữ liệu}: SQL Server với lược đồ do EF Core migrations quản lý.
+\end{itemize}
+
+Ngoài phạm vi hiện tại, các tích hợp như chữ ký số, thanh toán trực tuyến, đồng bộ một cửa liên thông hoặc tích hợp định danh điện tử mức sâu chưa được triển khai trong mã nguồn hiện tại.
+
+\subsection{Phương pháp thực hiện báo cáo}
+Báo cáo này được xây dựng theo phương pháp \textbf{code-driven documentation}, tức là:
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Đọc trực tiếp mã nguồn của toàn bộ module backend và frontend.
+  \item Đối chiếu controllers, services, models, validators, cấu hình runtime và migration để tái dựng thiết kế hệ thống thực tế.
+  \item Trích xuất endpoint và luồng nghiệp vụ từ code thay vì mô tả giả định.
+  \item Tổng hợp test case và tiêu chí đánh giá dựa trên hành vi ứng dụng đã cài đặt.
+\end{enumerate}
+
+\subsection{Giá trị thực tiễn}
+Hệ thống mang lại các lợi ích thực tiễn:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Người dân tiếp cận thông tin nhanh, tra cứu thủ tục minh bạch và gửi hồ sơ trực tuyến thuận tiện.
+  \item Cán bộ xã có công cụ quản trị tập trung, giảm thao tác thủ công và tăng khả năng theo dõi tiến độ.
+  \item Dữ liệu nội dung và dịch vụ được chuẩn hóa, giúp công tác vận hành nhất quán hơn.
+  \item Nền tảng kỹ thuật mở rộng tốt để phát triển các tính năng nâng cao ở giai đoạn tiếp theo.
+\end{itemize}
+
+\newpage
+
+\section{Cơ sở lý thuyết}
+
+\subsection{Kiến trúc ba lớp trong ứng dụng web}
+Kiến trúc tổng thể của hệ thống tuân theo mô hình ba lớp:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Presentation Layer}: giao diện React ở hai dự án frontend.
+  \item \textbf{Application/API Layer}: ASP.NET Core Web API xử lý nghiệp vụ, xác thực, phân quyền.
+  \item \textbf{Data Layer}: SQL Server thông qua Entity Framework Core.
+\end{itemize}
+
+Mô hình này giúp phân tách trách nhiệm rõ ràng, thuận lợi cho bảo trì, mở rộng và kiểm thử từng phần độc lập.
+
+\subsection{RESTful API và chuẩn trao đổi dữ liệu}
+Hệ thống sử dụng RESTful API với định dạng dữ liệu JSON. Các nguyên tắc được áp dụng trong code:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Đường dẫn tài nguyên theo danh từ số nhiều: \texttt{/api/public/articles}, \texttt{/api/admin/users}.
+  \item Tách route public và route admin theo namespace rõ ràng.
+  \item HTTP methods phản ánh đúng hành vi: GET (đọc), POST (tạo), PUT (cập nhật), DELETE (xóa).
+  \item Trả về mã trạng thái phù hợp: 200, 202, 204, 400, 401, 404, 500.
+\end{itemize}
+
+\subsection{Xác thực và phân quyền bằng JWT}
+Ứng dụng triển khai JWT Bearer Authentication trong \texttt{Program.cs}. Token được tạo tại \texttt{TokenService} với các đặc điểm:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Claims chuẩn: \texttt{sub}, \texttt{email}, \texttt{nameidentifier}, \texttt{name}.
+  \item Claims vai trò: thêm danh sách role của người dùng để phục vụ \texttt{[Authorize(Roles=...)]}.
+  \item Thuật toán ký: HMAC SHA256.
+  \item Thời hạn token: 8 giờ.
+\end{itemize}
+
+Phân quyền được triển khai theo role-based access control:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{Admin}: toàn quyền quản trị, bao gồm quản lý người dùng.
+  \item \texttt{Editor}: quản trị nội dung/dịch vụ theo phạm vi cho phép.
+  \item \texttt{Viewer}: xem dashboard tổng hợp.
+\end{itemize}
+
+\subsection{ASP.NET Core Identity}
+Identity cung cấp cơ chế quản lý tài khoản, mật khẩu, role, claims và các bảng hệ thống chuẩn. Ưu điểm của lựa chọn này:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Giảm rủi ro khi tự viết cơ chế bảo mật từ đầu.
+  \item Khả năng mở rộng tốt cho các yêu cầu reset mật khẩu, xác thực hai lớp trong tương lai.
+  \item Tích hợp trực tiếp với EF Core và DI container của ASP.NET Core.
+\end{itemize}
+
+Trong cấu hình hiện tại, chính sách mật khẩu yêu cầu tối thiểu 6 ký tự và có chữ số. Email phải duy nhất.
+
+\subsection{Entity Framework Core và Migration}
+EF Core được dùng để ánh xạ model C\# sang bảng dữ liệu SQL Server. Ưu điểm chính:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Khai báo ràng buộc dữ liệu ở tầng model để đồng bộ giữa code và DB.
+  \item Quản lý thay đổi lược đồ bằng migration có phiên bản.
+  \item Hỗ trợ truy vấn LINQ mạnh và tối ưu hóa tương đối tốt với chỉ mục phù hợp.
+\end{itemize}
+
+Ứng dụng sử dụng cơ chế tự động migrate khi khởi động, giúp môi trường chạy mới được khởi tạo DB nhanh.
+
+\subsection{Validation với FluentValidation}
+Thay vì kiểm tra rải rác trong controller, dự án áp dụng FluentValidation cho các DTO nhập liệu. Mỗi request quan trọng đều có validator tương ứng:
+\begin{itemize}[leftmargin=1.1cm]
+  \item LoginRequestValidator.
+  \item UpsertCategoryRequestValidator.
+  \item UpsertArticleRequestValidator.
+  \item CreateCommentRequestValidator.
+  \item UpsertServiceProcedureRequestValidator.
+  \item CreateApplicationRequestValidator.
+  \item UpdateApplicationStatusRequestValidator.
+\end{itemize}
+
+Lợi ích là thông báo lỗi thống nhất, giảm bug đầu vào và nâng cao độ tin cậy dữ liệu.
+
+\subsection{Xử lý lỗi tập trung bằng middleware}
+\texttt{GlobalExceptionMiddleware} bắt các lỗi chưa xử lý và trả về dạng \texttt{application/problem+json}. Mỗi lỗi có:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Mã trạng thái tương ứng theo loại exception.
+  \item \texttt{traceId} để truy vết log.
+  \item \texttt{detail} chỉ hiển thị trong môi trường Development.
+\end{itemize}
+
+Đây là cách tiếp cận đúng chuẩn cho API production vì tránh lộ stack trace và tăng khả năng theo dõi vận hành.
+
+\subsection{Logging với Serilog}
+Hệ thống dùng Serilog với hai sink chính: Console và File rolling theo ngày. Cấu hình này đem lại:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Quan sát log thời gian thực ở môi trường phát triển.
+  \item Lưu vết lịch sử vận hành để hậu kiểm và phân tích sự cố.
+  \item Khả năng mở rộng thêm sink sang Elastic, Seq hoặc cloud logging.
+\end{itemize}
+
+\subsection{Khái niệm SPA và React Router}
+Frontend dùng React theo mô hình SPA:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Điều hướng client-side bằng React Router.
+  \item Tái sử dụng layout với \texttt{Outlet} cho từng nhóm route.
+  \item Tách lớp gọi API bằng Axios instance trong \texttt{lib/api.js}.
+\end{itemize}
+
+Trong dự án có hai ứng dụng frontend độc lập:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{xatanthuandong-web}: cổng người dân và một phần admin rút gọn.
+  \item \texttt{xatanthuandong-portal}: portal admin chuyên sâu.
+\end{itemize}
+
+\subsection{Nguyên lý bảo mật web áp dụng}
+Từ mã nguồn hiện tại có thể thấy các nguyên lý đã được áp dụng ở mức cơ bản:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Xác thực dựa trên token và kiểm tra role ở endpoint admin.
+  \item Validate dữ liệu phía server.
+  \item Giới hạn loại file upload theo đuôi và MIME.
+  \item Tách API public và API admin, thêm cơ chế ẩn admin route ở môi trường Production.
+\end{itemize}
+
+\subsection{Khái niệm kiểm thử trong hệ thống web}
+Kiểm thử trong đồ án này bao gồm các lớp:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Kiểm thử chức năng API theo endpoint.
+  \item Kiểm thử tích hợp frontend-backend theo luồng nghiệp vụ.
+  \item Kiểm thử đầu vào lỗi và kiểm tra thông báo phản hồi.
+  \item Kiểm thử tương thích giao diện và tính phản hồi.
+\end{itemize}
+
+\newpage
+
+\section{Phân tích thiết kế}
+
+\subsection{Khảo sát yêu cầu chức năng}
+Từ mã nguồn đã triển khai, có thể nhóm yêu cầu chức năng thành hai nhóm lớn: công khai và quản trị.
+
+\subsubsection{Nhóm công khai dành cho người dân}
+\begin{itemize}[leftmargin=1.1cm]
+  \item Xem danh mục tin tức hoạt động.
+  \item Xem danh sách bài viết đã xuất bản, lọc theo danh mục, tìm kiếm theo từ khóa.
+  \item Xem chi tiết bài viết theo slug.
+  \item Gửi bình luận cho bài viết, chờ duyệt.
+  \item Xem danh sách thủ tục hành chính đang hoạt động.
+  \item Nộp hồ sơ thủ tục trực tuyến và nhận mã hồ sơ.
+  \item Tra cứu trạng thái hồ sơ bằng mã.
+  \item Xem danh sách lãnh đạo/cán bộ theo nhóm.
+  \item Xem thư viện media có phân trang.
+\end{itemize}
+
+\subsubsection{Nhóm quản trị nội bộ}
+\begin{itemize}[leftmargin=1.1cm]
+  \item Đăng nhập quản trị và nhận token JWT.
+  \item Xem dashboard tổng hợp số liệu.
+  \item Quản lý danh mục tin tức.
+  \item Quản lý bài viết (CRUD).
+  \item Duyệt/xóa bình luận.
+  \item Quản lý thông tin lãnh đạo và ảnh đại diện.
+  \item Quản lý media: upload, thay ảnh, cập nhật topic/title, xóa.
+  \item Quản lý thủ tục hành chính.
+  \item Quản lý hồ sơ dịch vụ và cập nhật trạng thái.
+  \item Quản lý tài khoản người dùng và phân quyền role.
+\end{itemize}
+
+\subsection{Yêu cầu phi chức năng}
+\begin{longtable}{p{3.1cm}p{10.6cm}}
+\toprule
+\textbf{Nhóm yêu cầu} & \textbf{Nội dung phân tích} \\
+\midrule
+Hiệu năng & API danh sách cần phản hồi tốt với dữ liệu mức vừa; đã có chỉ mục cho các truy vấn chính như bài viết theo trạng thái, hồ sơ theo trạng thái. \\
+Khả dụng & Hệ thống có seed dữ liệu mặc định giúp khởi tạo nhanh môi trường mới. \\
+Bảo mật & Áp dụng JWT, kiểm tra role, validate đầu vào, kiểm soát upload ảnh. \\
+Bảo trì & Kiến trúc phân lớp và tách DTO/Validator/Service/Controller giúp dễ bảo trì. \\
+Mở rộng & Có thể thêm endpoint, thêm bảng nghiệp vụ và mở rộng frontend theo route module. \\
+Theo dõi vận hành & Logging Serilog theo file ngày và console. \\
+Tương thích UI & Frontend dùng Bootstrap và CSS responsive, hỗ trợ desktop/mobile. \\
+Chất lượng dữ liệu & Ràng buộc EF Core + FluentValidation giảm dữ liệu sai lệch. \\
+An toàn lỗi & Middleware lỗi tập trung trả về chuẩn problem details. \\
+Triển khai & Có cấu hình dev rõ ràng, có Swagger để kiểm thử API nhanh. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Tác nhân và ca sử dụng chính}
+\subsubsection{Tác nhân hệ thống}
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Người dân}: truy cập thông tin và gửi hồ sơ dịch vụ.
+  \item \textbf{Editor}: cập nhật nội dung, xử lý một phần nghiệp vụ quản trị.
+  \item \textbf{Admin}: toàn quyền quản trị hệ thống.
+  \item \textbf{Viewer}: xem dashboard tổng quan.
+\end{itemize}
+
+\subsubsection{Danh sách use case tiêu biểu}
+\begin{longtable}{p{2.4cm}p{4.3cm}p{7.1cm}}
+\toprule
+\textbf{Mã} & \textbf{Use case} & \textbf{Mô tả rút gọn} \\
+\midrule
+UC-01 & Xem tin tức & Người dân vào trang tin, lọc theo danh mục hoặc từ khóa. \\
+UC-02 & Xem chi tiết bài viết & Truy cập bài viết theo slug, đọc nội dung đầy đủ. \\
+UC-03 & Gửi bình luận & Gửi bình luận cho bài viết, hệ thống lưu ở trạng thái chờ duyệt. \\
+UC-04 & Xem thủ tục & Danh sách thủ tục đang hoạt động cùng mô tả và yêu cầu hồ sơ. \\
+UC-05 & Nộp hồ sơ dịch vụ & Người dân nhập thông tin và gửi yêu cầu thủ tục trực tuyến. \\
+UC-06 & Tra cứu hồ sơ & Người dân nhập mã hồ sơ để xem trạng thái xử lý. \\
+UC-07 & Đăng nhập quản trị & Admin/Editor đăng nhập nhận JWT token. \\
+UC-08 & Quản lý danh mục & Tạo/sửa/xóa danh mục phục vụ phân loại bài viết. \\
+UC-09 & Quản lý bài viết & Tạo/sửa/xóa bài viết, thiết lập trạng thái Draft/Published. \\
+UC-10 & Quản lý media & Upload ảnh, thay thế ảnh, cập nhật chủ đề ảnh. \\
+UC-11 & Duyệt bình luận & Quản trị duyệt bình luận hợp lệ trước khi hiển thị. \\
+UC-12 & Quản lý thủ tục & Cập nhật thông tin thủ tục hành chính. \\
+UC-13 & Cập nhật hồ sơ & Quản trị cập nhật trạng thái Submitted/Processing/Approved/Rejected. \\
+UC-14 & Quản lý người dùng & Admin tạo/sửa/xóa tài khoản, gán role hệ thống. \\
+UC-15 & Xem dashboard & Người dùng có quyền xem số liệu tổng quan hệ thống. \\
+\bottomrule
+\end{longtable}
+
+\figureplaceholder{Biểu đồ use case tổng quát của hệ thống}{fig:usecase-overall}
+
+\subsection{Thiết kế kiến trúc logic}
+\begin{lstlisting}[style=appcode]
+[Citizen Browser / Admin Browser]
+            |
+            v
+[React Frontend Web]  [React Frontend Portal]
+            |             |
+            +------HTTP/JSON------+
+                                 v
+                    [ASP.NET Core Web API]
+                       |   |   |   |
+                       |   |   |   +--> Middleware (Exception, Logging)
+                       |   |   +------> Identity + JWT + Authorization
+                       |   +----------> Controllers + Services + Validators
+                       +--------------> EF Core DbContext
+                                         |
+                                         v
+                                    [SQL Server]
+\end{lstlisting}
+
+\figureplaceholder{Sơ đồ kiến trúc tổng thể hệ thống (phiên bản đồ họa)}{fig:architecture-overview}
+
+\subsection{Thiết kế module backend}
+\subsubsection{Phân lớp mã nguồn backend}
+\begin{itemize}[leftmargin=1.1cm]
+  \item \textbf{Controllers}: tiếp nhận HTTP request, trả response.
+  \item \textbf{Dtos}: hợp đồng dữ liệu vào/ra cho API.
+  \item \textbf{Validators}: kiểm tra dữ liệu request.
+  \item \textbf{Models}: thực thể nghiệp vụ ánh xạ DB.
+  \item \textbf{Services}: xử lý nghiệp vụ tổng hợp (token, dashboard, audit).
+  \item \textbf{Data}: DbContext và SeedData.
+  \item \textbf{Middlewares}: xử lý lỗi toàn cục.
+\end{itemize}
+
+\subsubsection{Danh sách controller và vai trò}
+\begin{longtable}{p{4.4cm}p{9.3cm}}
+\toprule
+\textbf{Controller} & \textbf{Nhiệm vụ chính} \\
+\midrule
+AuthController & Xác thực đăng nhập, cấp JWT. \\
+PublicContentController & Public API cho danh mục, bài viết, bình luận, tìm kiếm, gợi ý từ khóa, lãnh đạo, media. \\
+PublicServicesController & Public API cho thủ tục hành chính và hồ sơ dịch vụ. \\
+AdminDashboardController & Trả dữ liệu tổng hợp dashboard. \\
+AdminUsersController & Quản lý người dùng và role (chỉ Admin). \\
+AdminContentController & Quản lý danh mục, bài viết, lãnh đạo, bình luận, media. \\
+AdminServicesController & Quản lý thủ tục và xử lý hồ sơ dịch vụ. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Thiết kế dữ liệu và quan hệ thực thể}
+
+\subsubsection{Danh sách bảng nghiệp vụ}
+\begin{longtable}{p{3.5cm}p{9.9cm}}
+\toprule
+\textbf{Bảng} & \textbf{Mục đích sử dụng} \\
+\midrule
+AspNetUsers & Tài khoản người dùng hệ thống (Identity) mở rộng với FullName, IsActive, CreatedAtUtc. \\
+AspNetRoles và bảng liên quan & Quản lý role và gán role cho người dùng. \\
+Categories & Danh mục tin tức (tên, slug, mô tả, trạng thái). \\
+Articles & Bài viết tin tức, liên kết danh mục và người tạo. \\
+Comments & Bình luận của người dân theo bài viết, hỗ trợ duyệt. \\
+ServiceProcedures & Danh sách thủ tục hành chính công khai. \\
+ServiceApplications & Hồ sơ nộp trực tuyến của người dân theo thủ tục. \\
+Media & Quản lý ảnh/media upload và phân loại theo topic. \\
+Leaders & Thông tin lãnh đạo/cán bộ hiển thị ở trang giới thiệu. \\
+AuditLogs & Lưu lịch sử thao tác nghiệp vụ (dịch vụ hỗ trợ). \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{Quan hệ dữ liệu chính}
+\begin{itemize}[leftmargin=1.1cm]
+  \item Category (1) --- (N) Article.
+  \item Article (1) --- (N) Comment.
+  \item AppUser (1) --- (N) Article theo trường CreatedByUserId.
+  \item AppUser (1) --- (N) Media theo trường UploadedByUserId.
+  \item ServiceProcedure (1) --- (N) ServiceApplication.
+\end{itemize}
+
+\figureplaceholder{Lược đồ quan hệ dữ liệu (ERD)}{fig:erd}
+
+\subsubsection{Chỉ mục dữ liệu quan trọng}
+Từ migration và DbContext, hệ thống có các index quan trọng:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{Categories.Slug} unique.
+  \item \texttt{Articles.Slug} unique.
+  \item \texttt{Articles(CategoryId, Status, PublishedAtUtc)}.
+  \item \texttt{Comments(ArticleId, IsApproved, CreatedAtUtc)}.
+  \item \texttt{ServiceApplications(ServiceProcedureId, Status, SubmittedAtUtc)}.
+  \item \texttt{Leaders(GroupKey, IsActive, DisplayOrder)}.
+  \item \texttt{Media.Topic}.
+\end{itemize}
+
+\subsection{Thiết kế API tổng quan}
+\subsubsection{Nhóm API công khai}
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{/api/public/categories}
+  \item \texttt{/api/public/articles}
+  \item \texttt{/api/public/articles/{slug}}
+  \item \texttt{/api/public/articles/{id}/comments}
+  \item \texttt{/api/public/articles/search}
+  \item \texttt{/api/public/articles/suggest}
+  \item \texttt{/api/public/leaders}
+  \item \texttt{/api/public/media}
+  \item \texttt{/api/public/services/procedures}
+  \item \texttt{/api/public/services/applications}
+  \item \texttt{/api/public/services/applications/{id}}
+\end{itemize}
+
+\subsubsection{Nhóm API quản trị}
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{/api/auth/login}
+  \item \texttt{/api/admin/dashboard/summary}
+  \item \texttt{/api/admin/users}
+  \item \texttt{/api/admin/content/*}
+  \item \texttt{/api/admin/services/*}
+\end{itemize}
+
+\subsection{Thiết kế frontend}
+\subsubsection{Frontend công khai \texttt{xatanthuandong-web}}
+Các route tiêu biểu:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Trang chủ: \texttt{/}
+  \item Giới thiệu: \texttt{/gioi-thieu}
+  \item Tin tức: \texttt{/tin-tuc}, \texttt{/tin-tuc/:slug}
+  \item Chuyên mục: \texttt{/tham-quan}, \texttt{/dac-san}
+  \item Dịch vụ: \texttt{/dich-vu}
+  \item Thư viện: \texttt{/thu-vien}
+  \item Liên hệ: \texttt{/lien-he}
+\end{itemize}
+
+\subsubsection{Frontend portal \texttt{xatanthuandong-portal}}
+Portal chuyên sâu tập trung vào quản trị:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Dashboard, quản lý danh mục, bài viết, media, bình luận.
+  \item Quản lý lãnh đạo, thủ tục, hồ sơ dịch vụ, người dùng.
+  \item Tách route và layout admin độc lập, phù hợp cho vận hành nội bộ.
+\end{itemize}
+
+\figureplaceholder{Sơ đồ điều hướng chính của hai frontend}{fig:frontend-routing}
+
+\subsection{Phân tích luồng nghiệp vụ điển hình}
+
+\subsubsection{Luồng đăng nhập admin}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Người dùng gửi \texttt{POST /api/auth/login} với email và mật khẩu.
+  \item API kiểm tra tài khoản, mật khẩu, trạng thái IsActive.
+  \item Nếu hợp lệ, API tạo JWT chứa role và trả về frontend.
+  \item Frontend lưu token vào localStorage, set header Authorization cho các request tiếp theo.
+\end{enumerate}
+
+\figureplaceholder{Sơ đồ luồng đăng nhập quản trị}{fig:flow-admin-login}
+
+\subsubsection{Luồng nộp hồ sơ dịch vụ}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Người dân chọn thủ tục từ danh sách \texttt{/api/public/services/procedures}.
+  \item Điền form hồ sơ và gửi \texttt{POST /api/public/services/applications}.
+  \item Backend kiểm tra thủ tục tồn tại và đang active.
+  \item Tạo bản ghi ServiceApplication với trạng thái ban đầu \texttt{Submitted}.
+  \item Trả về mã hồ sơ cho người dân để tra cứu sau này.
+\end{enumerate}
+
+\figureplaceholder{Sơ đồ luồng nộp hồ sơ dịch vụ trực tuyến}{fig:flow-service-application}
+
+\subsubsection{Luồng duyệt bình luận}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Người dân gửi bình luận mới, hệ thống lưu \texttt{IsApproved=false}.
+  \item Quản trị truy cập danh sách bình luận chờ duyệt.
+  \item Quản trị gọi endpoint approve để đổi trạng thái.
+  \item Chỉ bình luận đã duyệt mới xuất hiện ở API public.
+\end{enumerate}
+
+\subsection{Rủi ro kỹ thuật và giải pháp}
+\begin{longtable}{p{4.1cm}p{4.9cm}p{4.4cm}}
+\toprule
+\textbf{Rủi ro} & \textbf{Ảnh hưởng} & \textbf{Hướng xử lý} \\
+\midrule
+Token bị lộ ở client & Truy cập trái phép API admin & Giảm thời gian sống token, cân nhắc refresh token, bảo vệ môi trường client. \\
+Upload file độc hại & Ảnh hưởng máy chủ & Giới hạn MIME/đuôi file, quét virus, đổi tên file an toàn. \\
+Thiếu kiểm thử tự động & Dễ phát sinh hồi quy & Bổ sung test tự động cho API quan trọng. \\
+Tăng dữ liệu lớn & Chậm truy vấn danh sách & Tối ưu index, phân trang bắt buộc, cache chọn lọc. \\
+Sai khác môi trường dev/prod & Khó deploy ổn định & Chuẩn hóa biến môi trường, profile cấu hình. \\
+\bottomrule
+\end{longtable}
+
+\newpage
+
+\section{Cài đặt}
+
+\subsection{Môi trường và công cụ}
+\begin{itemize}[leftmargin=1.1cm]
+  \item Nền tảng backend: .NET 8 Web API.
+  \item Cơ sở dữ liệu: SQL Server.
+  \item Frontend: React + Vite.
+  \item Quản lý gói backend: NuGet.
+  \item Quản lý gói frontend: npm.
+  \item Hỗ trợ API test: Swagger và file \texttt{XaTanThuanDong.Api.http}.
+\end{itemize}
+
+\subsection{Cấu trúc thư mục triển khai}
 \begin{lstlisting}[style=appcode]
 XaTanThuanDong.sln
 backend/
   XaTanThuanDong.Api/
+    Controllers/
+    Data/
+    Dtos/
+    Middlewares/
+    Models/
+    Services/
+    Validators/
+    Migrations/
 frontend/
   xatanthuandong-web/
+  xatanthuandong-portal/
+docs/
+  report/
 \end{lstlisting}
 
-\subsection{Backend: \texttt{backend/XaTanThuanDong.Api}}
-Có các thành phần chính: Controllers, Data (DbContext + Seed), Dtos, Models, Services, Validators, Middlewares, Migrations, Uploads.
+\figureplaceholder{Ảnh chụp cấu trúc thư mục dự án trong IDE}{fig:project-structure}
 
-Controllers quan trọng:
-\begin{itemize}[leftmargin=1.2cm]
-  \item \texttt{AuthController.cs}: đăng nhập/đăng ký, cấp JWT.
-  \item \texttt{PublicContentController.cs}: API public cho bài viết, danh mục.
-  \item \texttt{PublicServicesController.cs}: API public cho dịch vụ, thủ tục.
-  \item \texttt{Admin*Controller.cs}: API quản trị (dashboard, users, services, content).
-\end{itemize}
+\subsection{Cài đặt backend chi tiết}
 
-\subsection{Frontend: \texttt{frontend/xatanthuandong-web}}
-Tổ chức theo standard Vite + React:
-\begin{itemize}[leftmargin=1.2cm]
-  \item \texttt{src/pages}: các trang public (Home, News list/detail, Services, About, Contact, Gallery) và admin.
-  \item \texttt{src/lib}: helper gọi API và auth.
-  \item \texttt{vite.config.js}: cấu hình dev server (proxy API trong dev).
-\end{itemize}
+\subsubsection{Đăng ký dịch vụ trong Program}
+\begin{lstlisting}[style=appcode]
+builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddDbContext<AppDbContext>(...UseSqlServer(...));
+builder.Services.AddIdentity<AppUser, IdentityRole>(...)
+               .AddEntityFrameworkStores<AppDbContext>()
+               .AddDefaultTokenProviders();
+builder.Services.AddAuthentication(...).AddJwtBearer(...);
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+\end{lstlisting}
 
-% -------------------- 3. Architecture --------------------
-\section{Kiến trúc hệ thống}
-\subsection{Luồng tổng quan}
-\begin{enumerate}[leftmargin=1.2cm]
-  \item Người dùng truy cập frontend (React).
-  \item Frontend gọi các endpoint public để lấy tin tức/dịch vụ.
-  \item Admin đăng nhập, nhận JWT, sau đó gọi các endpoint admin với header Authorization.
-  \item Backend truy cập CSDL qua EF Core (DbContext), trả JSON.
+Phần cài đặt trên đảm bảo ứng dụng có đầy đủ pipeline cho API bảo mật, kiểm tra dữ liệu và truy cập cơ sở dữ liệu.
+
+\subsubsection{Pipeline middleware}
+Trình tự middleware chính trong code:
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Serilog request logging.
+  \item GlobalExceptionMiddleware.
+  \item Swagger (chỉ development).
+  \item HTTPS redirection.
+  \item CORS policy cho frontend.
+  \item Cơ chế ẩn admin API trong Production.
+  \item Routing + Authentication + Authorization.
+  \item MapControllers.
+  \item Static files và static files cho thư mục Uploads.
 \end{enumerate}
 
-\subsection{Công nghệ}
-\begin{longtable}{p{5.2cm}p{9.2cm}}
+\subsubsection{DbContext và ràng buộc dữ liệu}
+Tại \texttt{AppDbContext}, các ràng buộc được khai báo rõ:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Độ dài tối đa cho tên, slug, email, trạng thái.
+  \item Unique index cho slug danh mục và slug bài viết.
+  \item Foreign key với hành vi xóa hợp lý (Restrict hoặc Cascade).
+  \item Composite index cho các truy vấn lọc phổ biến.
+\end{itemize}
+
+\subsubsection{Seed dữ liệu}
+\texttt{SeedData} khởi tạo:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Role mặc định: Admin, Editor, Viewer.
+  \item Tài khoản admin mặc định để vận hành thử nghiệm.
+  \item Danh mục mẫu, thủ tục mẫu, bài viết mẫu.
+  \item Dữ liệu được thiết kế idempotent để tránh trùng khi chạy nhiều lần.
+\end{itemize}
+
+\subsubsection{Cài đặt chức năng content admin}
+\texttt{AdminContentController} hiện thực các chức năng quan trọng:
+\begin{itemize}[leftmargin=1.1cm]
+  \item CRUD danh mục và bài viết.
+  \item CRUD danh sách lãnh đạo.
+  \item Duyệt và xóa bình luận.
+  \item Upload ảnh, thay thế ảnh, cập nhật metadata và xóa media.
+\end{itemize}
+
+\subsubsection{Cài đặt chức năng services admin}
+\texttt{AdminServicesController} cho phép:
+\begin{itemize}[leftmargin=1.1cm]
+  \item CRUD thủ tục hành chính.
+  \item Liệt kê hồ sơ người dân nộp.
+  \item Cập nhật trạng thái hồ sơ kèm ghi chú xử lý.
+\end{itemize}
+
+\subsubsection{Cài đặt chức năng users admin}
+\texttt{AdminUsersController} chỉ cho role Admin:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Tạo người dùng với danh sách role.
+  \item Cập nhật họ tên, trạng thái, role.
+  \item Xóa người dùng.
+\end{itemize}
+
+\subsection{Cài đặt frontend công khai}
+
+\subsubsection{Khởi tạo ứng dụng và route}
+Frontend web sử dụng \texttt{BrowserRouter} và \texttt{HelmetProvider}. Auth token được nạp từ localStorage ngay lúc khởi động bằng \texttt{initAuthFromStorage()}.
+
+\subsubsection{Trang chủ và tin tức}
+\texttt{HomePage} dùng Swiper để hiển thị banner và gọi \texttt{/api/public/articles} lấy dữ liệu mới nhất.
+
+\texttt{NewsListPage} triển khai:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Tìm kiếm theo từ khóa.
+  \item Lọc theo danh mục.
+  \item Lọc theo khoảng ngày.
+  \item Chuyển đổi chế độ hiển thị lưới/danh sách.
+  \item Gợi ý từ khóa tự động qua \texttt{/api/public/articles/suggest}.
+  \item Tải thêm theo cuộn (infinite-like scroll) có thể bật/tắt.
+\end{itemize}
+
+\figureplaceholder{Giao diện trang chủ và danh sách tin tức (frontend công khai)}{fig:ui-public-home-news}
+
+\subsubsection{Trang dịch vụ}
+\texttt{ServicesPage} có hai khối nghiệp vụ rõ ràng:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Khối nộp hồ sơ mới (POST applications).
+  \item Khối tra cứu hồ sơ theo mã (GET applications/{id}).
+\end{itemize}
+
+\figureplaceholder{Giao diện nộp và tra cứu hồ sơ dịch vụ}{fig:ui-public-services}
+
+\subsubsection{Trang thư viện media}
+\texttt{GalleryPage} gọi \texttt{/api/public/media} có phân trang, hiển thị ảnh theo lưới, xử lý trạng thái loading/error rõ ràng.
+
+\subsection{Cài đặt frontend portal quản trị}
+
+\subsubsection{Điều hướng và bảo vệ route}
+Portal admin có layout riêng, nếu không có token thì điều hướng về trang đăng nhập. Đây là lớp bảo vệ ở phía client, kết hợp với \texttt{[Authorize]} ở backend để đảm bảo an toàn hai lớp.
+
+\subsubsection{Màn hình quản lý bài viết}
+\texttt{AdminArticleEditorPage} hỗ trợ:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Sinh slug tự động từ tiêu đề.
+  \item Upload ảnh đại diện và ảnh phụ.
+  \item Chèn ảnh phụ vào nội dung HTML khi lưu.
+  \item Lưu ở trạng thái Draft/Published.
+\end{itemize}
+
+\figureplaceholder{Giao diện dashboard và biên tập bài viết trên portal quản trị}{fig:ui-admin-portal}
+
+\subsubsection{Màn hình quản lý danh mục, bình luận, thủ tục}
+Portal có đủ các màn hình CRUD thao tác trực tiếp với API admin:
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{AdminCategoriesPage}
+  \item \texttt{AdminCommentsPage}
+  \item \texttt{AdminProceduresPage}
+  \item \texttt{AdminServicesPage}
+  \item \texttt{AdminUsersPage}
+\end{itemize}
+
+\subsection{Cấu hình triển khai và môi trường}
+
+\subsubsection{Backend}
+Các cấu hình chính trong \texttt{appsettings.json}:
+\begin{itemize}[leftmargin=1.1cm]
+  \item ConnectionStrings cho SQL Server.
+  \item Jwt: Issuer, Audience, Key.
+  \item Serilog sink console/file.
+\end{itemize}
+
+\subsubsection{Frontend}
+\begin{itemize}[leftmargin=1.1cm]
+  \item \texttt{xatanthuandong-web} dev server port 5173 và proxy \texttt{/api} sang backend 5116.
+  \item \texttt{xatanthuandong-portal} dev server port 5174.
+\end{itemize}
+
+\subsection{Danh mục package chính}
+\begin{longtable}{p{4.3cm}p{8.9cm}}
 \toprule
-\textbf{Hạng mục} & \textbf{Công nghệ} \\
+\textbf{Thành phần} & \textbf{Thư viện đáng chú ý} \\
 \midrule
-Backend & ASP.NET Core 8 Web API, EF Core Migrations, FluentValidation, JWT, Middleware xử lý lỗi \\
-Frontend & React, Vite, React Router, Axios (thông qua \texttt{src/lib/api.js}) \\
-CSDL & (Theo cấu hình dự án) EF Core, Migration \texttt{InitialCreate} \\
+Backend & Microsoft.AspNetCore.Authentication.JwtBearer, Microsoft.AspNetCore.Identity.EntityFrameworkCore, EFCore.SqlServer, FluentValidation.AspNetCore, Serilog.AspNetCore, Swashbuckle.AspNetCore. \\
+Frontend web & React 18, react-router-dom 6, axios, bootstrap, chart.js, react-chartjs-2, react-helmet-async, swiper, aos. \\
+Frontend portal & React 19, react-router-dom 7, axios, bootstrap, chart.js, react-helmet-async. \\
 \bottomrule
 \end{longtable}
 
-% -------------------- 4. Database --------------------
-\section{Cơ sở dữ liệu (mô hình thực thể)}
-Dựa theo thư mục \texttt{Models/} trong backend, các thực thể chính gồm:
-\begin{itemize}[leftmargin=1.2cm]
-  \item \textbf{AppUser}: người dùng hệ thống (admin/user).
-  \item \textbf{Category}: danh mục tin.
-  \item \textbf{Article}: bài viết/tin tức.
-  \item \textbf{Comment}: bình luận (nếu sử dụng).
-  \item \textbf{Media}: tài nguyên media (ảnh/file).
-  \item \textbf{ServiceProcedure}: thủ tục dịch vụ.
-  \item \textbf{ServiceApplication}: hồ sơ đăng ký/đơn yêu cầu dịch vụ.
-  \item \textbf{AuditLog}: log thao tác (nếu dùng).
-\end{itemize}
-
-\subsection{Bảng tóm tắt entities}
-\begin{longtable}{p{4.2cm}p{10.2cm}}
+\subsection{Mô tả endpoint chi tiết}
+\begin{longtable}{p{1.8cm}p{6.2cm}p{5.2cm}}
 \toprule
-\textbf{Entity} & \textbf{Mô tả} \\
+\textbf{Method} & \textbf{Endpoint} & \textbf{Ghi chú} \\
 \midrule
-AppUser & Lưu thông tin tài khoản, role, password hash, ... \\
-Category & Danh mục nội dung/bài viết \\
-Article & Nội dung tin tức, slug, title, summary, body, thumbnail, publishedAt \\
-ServiceProcedure & Thông tin thủ tục: tên, mô tả, hồ sơ cần, thời gian, lệ phí,... \\
-ServiceApplication & Yêu cầu dịch vụ của người dân: thông tin liên hệ, trạng thái xử lý, đính kèm,... \\
-Media & Quản lý file/ảnh upload \\
-AuditLog & Ghi nhận lịch sử thao tác/quản trị \\
-Comment & Bình luận theo bài viết \\
+POST & /api/auth/login & Đăng nhập và nhận JWT. \\
+GET & /api/public/categories & Danh sách danh mục active. \\
+GET & /api/public/articles & Danh sách bài viết published, hỗ trợ lọc. \\
+GET & /api/public/articles/{slug} & Chi tiết bài viết. \\
+GET & /api/public/articles/{articleId}/comments & Lấy bình luận đã duyệt. \\
+POST & /api/public/articles/{articleId}/comments & Gửi bình luận mới chờ duyệt. \\
+GET & /api/public/articles/search & Tìm kiếm nâng cao theo từ khóa và khoảng ngày. \\
+GET & /api/public/articles/suggest & Gợi ý tiêu đề theo từ khóa. \\
+GET & /api/public/leaders & Danh sách lãnh đạo/cán bộ theo nhóm. \\
+GET & /api/public/media & Danh sách media có phân trang. \\
+GET & /api/public/services/procedures & Danh sách thủ tục active. \\
+POST & /api/public/services/applications & Tạo hồ sơ dịch vụ. \\
+GET & /api/public/services/applications/{id} & Tra cứu trạng thái hồ sơ. \\
+GET & /api/admin/dashboard/summary & Số liệu dashboard. \\
+GET & /api/admin/users & Danh sách người dùng (Admin). \\
+POST & /api/admin/users & Tạo tài khoản mới (Admin). \\
+PUT & /api/admin/users/{id} & Cập nhật role/trạng thái (Admin). \\
+DELETE & /api/admin/users/{id} & Xóa người dùng (Admin). \\
+GET & /api/admin/content/categories & Danh sách danh mục quản trị. \\
+POST & /api/admin/content/categories & Tạo danh mục. \\
+PUT & /api/admin/content/categories/{id} & Cập nhật danh mục. \\
+DELETE & /api/admin/content/categories/{id} & Xóa danh mục. \\
+GET & /api/admin/content/articles & Danh sách bài viết quản trị. \\
+GET & /api/admin/content/articles/{id} & Chi tiết bài viết. \\
+POST & /api/admin/content/articles & Tạo bài viết. \\
+PUT & /api/admin/content/articles/{id} & Cập nhật bài viết. \\
+DELETE & /api/admin/content/articles/{id} & Xóa bài viết. \\
+GET & /api/admin/content/leaders & Danh sách lãnh đạo. \\
+POST & /api/admin/content/leaders & Tạo lãnh đạo. \\
+PUT & /api/admin/content/leaders/{id} & Cập nhật lãnh đạo. \\
+DELETE & /api/admin/content/leaders/{id} & Xóa lãnh đạo. \\
+GET & /api/admin/content/comments & Danh sách bình luận. \\
+PUT & /api/admin/content/comments/{id}/approve & Duyệt bình luận. \\
+DELETE & /api/admin/content/comments/{id} & Xóa bình luận. \\
+POST & /api/admin/content/media/upload & Upload ảnh. \\
+POST & /api/admin/content/media/{id}/replace & Thay ảnh hiện hữu. \\
+GET & /api/admin/content/media & Danh sách media quản trị. \\
+PUT & /api/admin/content/media/{id} & Cập nhật tiêu đề/topic media. \\
+DELETE & /api/admin/content/media/{id} & Xóa media. \\
+GET & /api/admin/services/procedures & Danh sách thủ tục quản trị. \\
+POST & /api/admin/services/procedures & Tạo thủ tục. \\
+PUT & /api/admin/services/procedures/{id} & Cập nhật thủ tục. \\
+DELETE & /api/admin/services/procedures/{id} & Xóa thủ tục. \\
+GET & /api/admin/services/applications & Danh sách hồ sơ dịch vụ. \\
+PUT & /api/admin/services/applications/{id}/status & Cập nhật trạng thái hồ sơ. \\
 \bottomrule
 \end{longtable}
 
-\textit{Ghi chú: Chi tiết cột (columns), quan hệ (FK) và index được định nghĩa trong Migration: \texttt{Migrations/20260323004718\_InitialCreate.cs}.}
+\subsection{Mẫu đoạn mã tiêu biểu}
 
-% -------------------- 5. API --------------------
-\section{API (tóm tắt endpoint)}
-\subsection{Public API}
-Các endpoint public nằm ở \texttt{PublicContentController.cs} và \texttt{PublicServicesController.cs}. Ví dụ:
-\begin{itemize}[leftmargin=1.2cm]
-  \item \texttt{GET /api/public/categories} --- lấy danh mục.
-  \item \texttt{GET /api/public/articles} --- danh sách bài viết (hỗ trợ query như \texttt{q}, \texttt{categoryId}).
-  \item \texttt{GET /api/public/articles/\{slug\}} --- chi tiết bài viết.
-  \item \texttt{GET /api/public/services} --- danh sách dịch vụ/thủ tục.
-\end{itemize}
-
-\subsection{Auth API}
-\texttt{AuthController.cs} cung cấp luồng đăng nhập/đăng ký và cấp token JWT.
-
-\subsection{Admin API}
-Các endpoint quản trị (yêu cầu JWT + role phù hợp):
-\begin{itemize}[leftmargin=1.2cm]
-  \item \texttt{/api/admin/dashboard} --- số liệu thống kê.
-  \item \texttt{/api/admin/users} --- quản lý user.
-  \item \texttt{/api/admin/content} --- quản lý categories/articles/media.
-  \item \texttt{/api/admin/services} --- quản lý dịch vụ/thủ tục/hồ sơ.
-\end{itemize}
-
-% -------------------- 6. Frontend pages --------------------
-\section{Frontend (các trang chính)}
-Các trang nằm ở \texttt{frontend/xatanthuandong-web/src/pages}.
-
-\begin{longtable}{p{5.2cm}p{9.2cm}}
-\toprule
-\textbf{Trang} & \textbf{Mô tả}\\
-\midrule
-HomePage.jsx & Trang chủ, giới thiệu nhanh và các block nội dung \\
-NewsListPage.jsx & Danh sách tin tức, tìm kiếm theo từ khóa/danh mục \\
-NewsDetailPage.jsx & Chi tiết bài viết theo slug \\
-ServicesPage.jsx & Danh sách dịch vụ/thủ tục \\
-AboutPage.jsx & Giới thiệu \\
-ContactPage.jsx & Liên hệ \\
-GalleryPage.jsx & Thư viện hình ảnh \\
-Admin/* & Khu vực quản trị (tùy triển khai) \\
-\bottomrule
-\end{longtable}
-
-% -------------------- 7. Run instructions --------------------
-\section{Hướng dẫn chạy dự án (Development)}
-\subsection{Yêu cầu}
-\begin{itemize}[leftmargin=1.2cm]
-  \item .NET SDK 8.x
-  \item Node.js (khuyến nghị LTS)
-\end{itemize}
-
-\subsection{Chạy Backend}
-Mở solution \texttt{XaTanThuanDong.sln} hoặc chạy project API.
-
-Chạy API (ví dụ):
+\subsubsection{TokenService}
 \begin{lstlisting}[style=appcode]
+public async Task<string> CreateTokenAsync(AppUser user)
+{
+    var roles = await _userManager.GetRolesAsync(user);
+    var claims = new List<Claim>
+    {
+        new(JwtRegisteredClaimNames.Sub, user.Id),
+        new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+        new(ClaimTypes.NameIdentifier, user.Id),
+        new(ClaimTypes.Name, user.UserName ?? string.Empty),
+    };
+    claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+    ...
+}
+\end{lstlisting}
+
+\subsubsection{GlobalExceptionMiddleware}
+\begin{lstlisting}[style=appcode]
+var (statusCode, title) = ex switch
+{
+    ArgumentException => (400, "Yeu cau khong hop le."),
+    UnauthorizedAccessException => (401, "Khong co quyen truy cap."),
+    KeyNotFoundException => (404, "Khong tim thay tai nguyen."),
+    _ => (500, "Da xay ra loi he thong.")
+};
+\end{lstlisting}
+
+\subsubsection{Public nộp hồ sơ}
+\begin{lstlisting}[style=appcode]
+[HttpPost("applications")]
+public async Task<ActionResult<object>> CreateApplication(CreateApplicationRequest req)
+{
+    var app = new ServiceApplication
+    {
+        ServiceProcedureId = req.ServiceProcedureId,
+        ApplicantName = req.ApplicantName,
+        Status = "Submitted"
+    };
+    _db.ServiceApplications.Add(app);
+    await _db.SaveChangesAsync();
+    return Ok(new { applicationId = app.Id, status = app.Status });
+}
+\end{lstlisting}
+
+\subsection{Hướng dẫn chạy hệ thống}
+\begin{lstlisting}[style=appcode]
+# Backend
 cd backend/XaTanThuanDong.Api
-# dotnet run
-\end{lstlisting}
+dotnet restore
+dotnet run
 
-Cấu hình port xem trong \texttt{Properties/launchSettings.json}. Mặc định backend chạy: \texttt{http://localhost:5168} (phụ thuộc launch settings).
-
-\subsection{Chạy Frontend}
-\begin{lstlisting}[style=appcode]
+# Frontend Web
 cd frontend/xatanthuandong-web
-# npm install
-# npm run dev
+npm install
+npm run dev
+
+# Frontend Portal
+cd frontend/xatanthuandong-portal
+npm install
+npm run dev
 \end{lstlisting}
 
-Trong dev, frontend nên gọi API theo dạng tương đối \texttt{/api/...} và cấu hình proxy trong \texttt{vite.config.js} để trỏ về backend.
+Mặc định backend chạy ở \texttt{http://localhost:5116}. Frontend web chạy cổng 5173 và portal chạy cổng 5174.
 
-% -------------------- 8. Notes --------------------
-\section{Ghi chú triển khai và bảo mật}
-\begin{itemize}[leftmargin=1.2cm]
-  \item Không commit secret (JWT secret, connection string production).
-  \item Bật HTTPS, cấu hình CORS đúng domain production.
-  \item Với upload: giới hạn loại file, giới hạn dung lượng, đặt tên file an toàn.
-  \item Ghi log và xử lý exception tập trung qua middleware.
+\newpage
+
+\section{Kiểm thử}
+
+\subsection{Chiến lược kiểm thử}
+Do mã nguồn hiện tại chưa có test tự động dạng unit/integration trong repository, chiến lược kiểm thử được xây dựng theo hướng:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Kiểm thử thủ công API bằng Swagger và HTTP file.
+  \item Kiểm thử chức năng đầu-cuối trên giao diện web.
+  \item Kiểm thử phân quyền theo role và các tình huống lỗi.
+  \item Kiểm thử dữ liệu đầu vào biên và dữ liệu không hợp lệ.
 \end{itemize}
+
+\subsection{Tiêu chí chấp nhận}
+\begin{longtable}{p{4.1cm}p{9.4cm}}
+\toprule
+\textbf{Tiêu chí} & \textbf{Điều kiện đạt} \\
+\midrule
+Đăng nhập admin & Tài khoản hợp lệ nhận JWT, sai thông tin trả 401. \\
+Public tin tức & Chỉ bài Published xuất hiện ở API công khai. \\
+Bình luận & Bình luận mới ở trạng thái chờ duyệt và chưa public ngay. \\
+Hồ sơ dịch vụ & Tạo hồ sơ thành công trả applicationId và status. \\
+Quản trị thủ tục & CRUD thủ tục hoạt động và dữ liệu đồng bộ. \\
+Quản trị người dùng & Chỉ role Admin thao tác được users API. \\
+Upload media & Chỉ chấp nhận ảnh hợp lệ, trả URL dùng được. \\
+Xử lý lỗi & API trả JSON lỗi có status, title và traceId. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Ma trận test case chi tiết}
+\begin{longtable}{p{1.2cm}p{3.2cm}p{4.7cm}p{4.2cm}}
+\toprule
+\textbf{TC} & \textbf{Chức năng} & \textbf{Bước kiểm thử} & \textbf{Kết quả mong đợi} \\
+\midrule
+TC01 & Login đúng & Gửi email/mật khẩu hợp lệ tới /api/auth/login & Trả 200, có token, roles. \\
+TC02 & Login sai mật khẩu & Gửi mật khẩu sai & Trả 401, thông báo lỗi xác thực. \\
+TC03 & Login user bị khóa & Đặt IsActive=false rồi login & Trả 401. \\
+TC04 & Lấy categories & GET /api/public/categories & Trả danh sách category active. \\
+TC05 & Lấy articles mặc định & GET /api/public/articles & Trả bài Published theo ngày giảm dần. \\
+TC06 & Lọc articles theo categoryId & Truyền categoryId hợp lệ & Chỉ trả bài của category tương ứng. \\
+TC07 & Tìm kiếm articles theo q & Truyền q có từ khóa & Trả bài có title/summary chứa q. \\
+TC08 & Lấy article detail hợp lệ & GET /api/public/articles/{slug} tồn tại & Trả 200 và dữ liệu chi tiết. \\
+TC09 & Lấy article detail không tồn tại & GET slug sai & Trả 404. \\
+TC10 & Gửi comment hợp lệ & POST comment đủ trường bắt buộc & Trả 202 Accepted. \\
+TC11 & Gửi comment thiếu author & Bỏ trống AuthorName & Trả 400 với lỗi validator. \\
+TC12 & Gợi ý từ khóa ngắn & q có độ dài <2 & Trả mảng rỗng. \\
+TC13 & Search nâng cao from-to & Gửi fromUtc, toUtc hợp lệ & Trả tối đa 200 bản ghi đúng khoảng ngày. \\
+TC14 & Lấy leaders mặc định & GET /api/public/leaders & Trả leaders active theo displayOrder. \\
+TC15 & Lấy leaders theo group & Truyền groupKey=lanh-dao & Trả đúng nhóm yêu cầu. \\
+TC16 & Lấy media phân trang & GET /api/public/media?page=1\&pageSize=9 & Trả items, total, totalPages. \\
+TC17 & pageSize quá lớn & pageSize=1000 & Hệ thống ép tối đa về 48. \\
+TC18 & Lấy procedures public & GET /api/public/services/procedures & Trả thủ tục active đã seed. \\
+TC19 & Nộp hồ sơ hợp lệ & POST applications với thông tin chuẩn & Trả 200 với applicationId mới. \\
+TC20 & Nộp hồ sơ sai ServiceProcedureId & Truyền ID không tồn tại & Trả 400. \\
+TC21 & Tra cứu hồ sơ tồn tại & GET /applications/{id} hợp lệ & Trả trạng thái hồ sơ. \\
+TC22 & Tra cứu hồ sơ không tồn tại & GET id sai & Trả 404. \\
+TC23 & Dashboard có quyền & Token role Viewer gọi summary & Trả 200 số liệu. \\
+TC24 & Dashboard không token & Không gửi token & Trả 401. \\
+TC25 & Users list bằng Admin & Token Admin gọi /api/admin/users & Trả danh sách user. \\
+TC26 & Users list bằng Editor & Token Editor gọi /api/admin/users & Trả 403. \\
+TC27 & Tạo user hợp lệ & POST /api/admin/users payload đúng & Trả 200. \\
+TC28 & Tạo user email trùng & Tạo user với email đã có & Trả 400 với message lỗi. \\
+TC29 & Cập nhật role user & PUT /api/admin/users/{id} roles mới & Trả 204, role đổi thành công. \\
+TC30 & Xóa user & DELETE /api/admin/users/{id} & Trả 204 nếu hợp lệ. \\
+TC31 & List categories admin & GET /api/admin/content/categories & Trả dữ liệu đầy đủ cả active/inactive. \\
+TC32 & Tạo category slug đúng chuẩn & slug dạng abc-def & Trả 200 tạo thành công. \\
+TC33 & Tạo category slug sai chuẩn & slug có khoảng trắng & Trả 400 validator. \\
+TC34 & Cập nhật category & PUT category hợp lệ & Trả 204, cập nhật UpdatedAtUtc. \\
+TC35 & Xóa category không dùng & DELETE id hợp lệ & Trả 204. \\
+TC36 & List articles admin & GET /api/admin/content/articles & Trả danh sách bài có categoryName. \\
+TC37 & Tạo article Draft & POST article status Draft & Trả 200, PublishedAtUtc rỗng. \\
+TC38 & Tạo article Published & POST article status Published & Trả 200, PublishedAtUtc có giá trị. \\
+TC39 & Cập nhật article đổi status & Từ Draft sang Published & PublishedAtUtc được gán. \\
+TC40 & Xóa article & DELETE article hợp lệ & Trả 204. \\
+TC41 & List comments pending & GET comments?approved=false & Trả bình luận chờ duyệt. \\
+TC42 & Approve comment & PUT comments/{id}/approve & Trả 204, IsApproved=true. \\
+TC43 & Delete comment & DELETE comments/{id} & Trả 204. \\
+TC44 & Upload media ảnh hợp lệ & POST form-data file .jpg & Trả URL /uploads/... \\
+TC45 & Upload media file sai định dạng & Upload .exe & Trả 400. \\
+TC46 & Replace media & POST media/{id}/replace ảnh mới & Trả 200, url mới và dọn file cũ. \\
+TC47 & Update media metadata & PUT media/{id} topic/title mới & Trả 204. \\
+TC48 & Delete media & DELETE media/{id} & Trả 204 và xóa file vật lý nếu có. \\
+TC49 & List procedures admin & GET /api/admin/services/procedures & Trả danh sách thủ tục quản trị. \\
+TC50 & Create procedure & POST procedure hợp lệ & Trả 200. \\
+TC51 & Update procedure & PUT procedure hợp lệ & Trả 204. \\
+TC52 & Delete procedure & DELETE procedure hợp lệ & Trả 204. \\
+TC53 & List applications admin & GET /api/admin/services/applications & Trả hồ sơ kèm tên thủ tục. \\
+TC54 & Filter applications status & Truyền status=Processing & Trả đúng hồ sơ theo trạng thái. \\
+TC55 & Update application status & PUT status + note & Trả 204 và cập nhật UpdatedAtUtc. \\
+TC56 & Branch public-api & Gọi /public-api/api/public/articles & Trả kết quả tương tự /api/public/articles. \\
+TC57 & Branch admin trong production & Gọi /public-api/api/admin/... ở Production & Trả 404 theo policy ẩn admin. \\
+TC58 & Middleware lỗi ArgumentException & Chủ động ném lỗi kiểu này & Trả 400 problem+json. \\
+TC59 & Middleware lỗi KeyNotFoundException & Chủ động ném lỗi kiểu này & Trả 404 problem+json. \\
+TC60 & Middleware lỗi không xác định & Ném exception chung & Trả 500 và có traceId. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Kiểm thử giao diện và trải nghiệm}
+\begin{longtable}{p{2.2cm}p{6.2cm}p{4.9cm}}
+\toprule
+\textbf{Mã} & \textbf{Nội dung} & \textbf{Kết quả mong đợi} \\
+\midrule
+UI01 & Mở trang chủ ở desktop & Header, slider, card tin hiển thị đầy đủ. \\
+UI02 & Mở trang chủ ở mobile & Menu thu gọn hoạt động đúng, layout không vỡ. \\
+UI03 & Danh sách tin tức nhiều dữ liệu & Infinite load/tải thêm hoạt động ổn định. \\
+UI04 & Tra cứu hồ sơ dịch vụ & Hiển thị đúng trạng thái và ghi chú nếu có. \\
+UI05 & Thư viện ảnh có nhiều trang & Chuyển trang không lỗi và ảnh hiển thị đúng URL. \\
+UI06 & Admin dashboard & Số liệu card và biểu đồ đồng bộ dữ liệu API. \\
+UI07 & Admin users form & Validate client cơ bản hoạt động, lỗi server hiển thị rõ. \\
+UI08 & Admin media upload & Upload xong ảnh xuất hiện ngay trong danh sách. \\
+UI09 & Portal route bảo vệ token & Thiếu token sẽ điều hướng về login. \\
+UI10 & Đăng xuất admin & Xóa token và không truy cập lại trang admin được nếu chưa login. \\
+\bottomrule
+\end{longtable}
+
+\figureplaceholder{Kết quả kiểm thử responsive trên thiết bị di động}{fig:test-responsive-mobile}
+
+\figureplaceholder{Kết quả kiểm thử upload media và hiển thị thư viện}{fig:test-media-library}
+
+\subsection{Đánh giá chất lượng hiện tại}
+Sau khi đối chiếu mã nguồn và hành vi đã thiết kế, có thể đánh giá:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Chức năng cốt lõi của cổng thông tin và dịch vụ công trực tuyến đã đầy đủ ở mức đồ án ứng dụng.
+  \item Kiến trúc API, mô hình dữ liệu và phân quyền tương đối rõ ràng, dễ mở rộng.
+  \item Chưa có bộ test tự động đi kèm repository, đây là điểm cần cải thiện ở giai đoạn tiếp theo.
+  \item Một số điểm bảo mật nâng cao (refresh token, quét file upload, CSP) có thể bổ sung cho môi trường production quy mô lớn.
+\end{itemize}
+
+\subsection{Đề xuất cải tiến kiểm thử}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Bổ sung test unit cho validators và service logic.
+  \item Bổ sung integration test cho API quan trọng: auth, content, services.
+  \item Bổ sung end-to-end test cho luồng chính trên frontend.
+  \item Thiết lập pipeline CI chạy test tự động mỗi lần merge code.
+\end{enumerate}
+
+\newpage
 
 \section{Kết luận}
-Tài liệu này gom tóm tắt cấu trúc và chức năng chính của hệ thống. Có thể mở rộng phần báo cáo bằng cách bổ sung: ERD chi tiết, ảnh chụp màn hình UI, test case, và kết quả triển khai.
+
+\subsection{Kết quả đạt được}
+Đồ án \textbf{XaTanThuanDong} đã hiện thực thành công một hệ thống đầy đủ cho nhu cầu cổng thông tin cấp xã, bao gồm:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Hệ thống API backend có xác thực JWT, phân quyền role và quản lý dữ liệu bằng EF Core.
+  \item Hai frontend React phục vụ hai mục tiêu rõ ràng: cổng công khai và portal quản trị.
+  \item Bộ chức năng quản trị bao quát nội dung, dịch vụ, hồ sơ, media, người dùng.
+  \item Dữ liệu khởi tạo mẫu và cấu hình môi trường rõ ràng giúp dự án chạy nhanh trong thực tế.
+\end{itemize}
+
+\subsection{Mức độ đáp ứng yêu cầu đề tài}
+So với mục tiêu ban đầu, hệ thống đáp ứng tốt các yêu cầu trọng tâm:
+\begin{itemize}[leftmargin=1.1cm]
+  \item Công khai thông tin địa phương minh bạch và có cấu trúc.
+  \item Hỗ trợ dịch vụ hành chính trực tuyến ở mức nộp hồ sơ và theo dõi trạng thái.
+  \item Cung cấp khu vực vận hành nội bộ với cơ chế phân quyền rõ ràng.
+\end{itemize}
+
+\subsection{Hạn chế hiện tại}
+\begin{itemize}[leftmargin=1.1cm]
+  \item Chưa tích hợp bộ kiểm thử tự động trong repository.
+  \item Chưa có dashboard phân tích sâu theo thời gian, theo loại dịch vụ.
+  \item Chưa có cơ chế thông báo realtime hoặc email khi trạng thái hồ sơ thay đổi.
+  \item Chưa tích hợp các hệ thống cấp trên như một cửa điện tử hoặc chữ ký số.
+\end{itemize}
+
+\subsection{Hướng phát triển tương lai}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Bổ sung quy trình refresh token, thu hồi token và bảo mật nâng cao.
+  \item Hoàn thiện test tự động toàn diện và tích hợp CI/CD.
+  \item Bổ sung module thống kê nghiệp vụ theo thời gian thực.
+  \item Mở rộng kênh tương tác người dân qua thông báo, email, SMS.
+  \item Tích hợp chữ ký số, thanh toán trực tuyến và đồng bộ dữ liệu liên thông.
+\end{enumerate}
+
+\subsection{Tổng kết}
+Với kiến trúc hiện tại, dự án có nền tảng kỹ thuật vững để tiếp tục phát triển thành một sản phẩm phục vụ thực tế trong quản lý hành chính địa phương. Báo cáo này đã tổng hợp đầy đủ quá trình phân tích, thiết kế, cài đặt và kiểm thử dựa trực tiếp trên mã nguồn hiện có, đảm bảo phản ánh trung thực trạng thái hệ thống tại thời điểm lập tài liệu.
+
+\newpage
+
+\section*{Phụ lục A: Danh sách tệp mã nguồn chính}
+\addcontentsline{toc}{section}{Phụ lục A: Danh sách tệp mã nguồn chính}
+
+\begin{longtable}{p{5.8cm}p{7.2cm}}
+\toprule
+\textbf{Tệp} & \textbf{Vai trò} \\
+\midrule
+backend/XaTanThuanDong.Api/Program.cs & Khởi tạo dịch vụ, middleware, routing, auth, static files. \\
+backend/XaTanThuanDong.Api/Data/AppDbContext.cs & Cấu hình model, quan hệ, chỉ mục. \\
+backend/XaTanThuanDong.Api/Data/SeedData.cs & Seed role, user, category, thủ tục, bài mẫu. \\
+backend/XaTanThuanDong.Api/Middlewares/GlobalExceptionMiddleware.cs & Chuẩn hóa phản hồi lỗi toàn cục. \\
+backend/XaTanThuanDong.Api/Controllers/AuthController.cs & Đăng nhập và cấp token JWT. \\
+backend/XaTanThuanDong.Api/Controllers/PublicContentController.cs & API public cho content, comments, leaders, media. \\
+backend/XaTanThuanDong.Api/Controllers/PublicServicesController.cs & API public cho thủ tục và hồ sơ. \\
+backend/XaTanThuanDong.Api/Controllers/AdminContentController.cs & Quản trị content, leaders, media, comments. \\
+backend/XaTanThuanDong.Api/Controllers/AdminServicesController.cs & Quản trị thủ tục và hồ sơ dịch vụ. \\
+backend/XaTanThuanDong.Api/Controllers/AdminUsersController.cs & Quản trị người dùng và vai trò. \\
+backend/XaTanThuanDong.Api/Controllers/AdminDashboardController.cs & Dashboard tổng hợp. \\
+frontend/xatanthuandong-web/src/App.jsx & Route chính cổng công khai và admin rút gọn. \\
+frontend/xatanthuandong-web/src/pages/HomePage.jsx & Trang chủ public. \\
+frontend/xatanthuandong-web/src/pages/NewsListPage.jsx & Danh sách tin tức public. \\
+frontend/xatanthuandong-web/src/pages/ServicesPage.jsx & Dịch vụ và tra cứu hồ sơ public. \\
+frontend/xatanthuandong-web/src/pages/GalleryPage.jsx & Thư viện ảnh public. \\
+frontend/xatanthuandong-portal/src/App.jsx & Route portal quản trị đầy đủ. \\
+frontend/xatanthuandong-portal/src/pages/admin/AdminArticleEditorPage.jsx & Trình biên tập bài viết admin. \\
+frontend/xatanthuandong-portal/src/pages/admin/AdminUsersPage.jsx & Quản lý tài khoản admin. \\
+frontend/xatanthuandong-portal/src/pages/admin/AdminProceduresPage.jsx & Quản lý thủ tục admin. \\
+\bottomrule
+\end{longtable}
+
+\section*{Phụ lục B: Mapping yêu cầu - module}
+\addcontentsline{toc}{section}{Phụ lục B: Mapping yêu cầu - module}
+
+\begin{longtable}{p{5.6cm}p{7.3cm}}
+\toprule
+\textbf{Yêu cầu} & \textbf{Module đáp ứng} \\
+\midrule
+Đăng nhập và phân quyền admin & AuthController, TokenService, Identity, AdminLayout. \\
+Quản lý tin tức và danh mục & AdminContentController, ContentDtos, ContentValidators, AdminArticles/AdminCategories pages. \\
+Tiếp nhận bình luận và duyệt & PublicContentController + AdminContentController + AdminComments page. \\
+Cung cấp dịch vụ hành chính công & PublicServicesController + AdminServicesController + Services pages. \\
+Tra cứu hồ sơ trực tuyến & PublicServicesController + ServicesPage frontend. \\
+Quản lý thư viện ảnh & AdminContentController media endpoints + GalleryPage/AdminMedia pages. \\
+Quản lý lãnh đạo địa phương & Leader model + public leaders endpoint + admin leaders pages. \\
+Thống kê dashboard & DashboardService + AdminDashboardController + dashboard pages. \\
+\bottomrule
+\end{longtable}
+
+\section*{Phụ lục C: Nhật ký triển khai đề xuất}
+\addcontentsline{toc}{section}{Phụ lục C: Nhật ký triển khai đề xuất}
+
+\begin{longtable}{p{2.3cm}p{4.4cm}p{6.2cm}}
+\toprule
+\textbf{Tuần} & \textbf{Hạng mục} & \textbf{Mô tả công việc} \\
+\midrule
+Tuần 1 & Khởi tạo dự án & Tạo solution, cấu hình backend, tạo project frontend và cấu trúc thư mục. \\
+Tuần 2 & Dữ liệu nền & Thiết kế model, DbContext, migration đầu tiên, seed role và tài khoản admin. \\
+Tuần 3 & Public API & Hoàn thành nhóm endpoint công khai cho content và services. \\
+Tuần 4 & Admin API & Hoàn thiện nhóm endpoint quản trị content/services/users/dashboard. \\
+Tuần 5 & Frontend công khai & Xây dựng giao diện public và kết nối API cơ bản. \\
+Tuần 6 & Frontend portal & Hoàn thiện portal quản trị với các màn hình CRUD chính. \\
+Tuần 7 & Media và leaders & Bổ sung upload media, quản lý leaders, cải thiện UX hiển thị. \\
+Tuần 8 & Kiểm thử và hoàn thiện & Chạy test thủ công, chỉnh sửa bug, hoàn thiện tài liệu báo cáo. \\
+\bottomrule
+\end{longtable}
+
+\section*{Phụ lục D: Từ điển dữ liệu chi tiết}
+\addcontentsline{toc}{section}{Phụ lục D: Từ điển dữ liệu chi tiết}
+
+\begin{longtable}{p{2.9cm}p{3.2cm}p{2.4cm}p{4.8cm}}
+\toprule
+\textbf{Bảng} & \textbf{Cột} & \textbf{Kiểu} & \textbf{Ý nghĩa} \\
+\midrule
+AspNetUsers & Id & nvarchar(450) & Khóa chính tài khoản. \\
+AspNetUsers & FullName & nvarchar(max) & Họ tên hiển thị của người dùng. \\
+AspNetUsers & IsActive & bit & Trạng thái kích hoạt tài khoản. \\
+AspNetUsers & CreatedAtUtc & datetime2 & Thời gian tạo tài khoản. \\
+AspNetUsers & UserName & nvarchar(256) & Tên đăng nhập theo Identity. \\
+AspNetUsers & NormalizedUserName & nvarchar(256) & Tên đăng nhập chuẩn hóa để tìm kiếm. \\
+AspNetUsers & Email & nvarchar(256) & Email đăng nhập. \\
+AspNetUsers & NormalizedEmail & nvarchar(256) & Email chuẩn hóa. \\
+AspNetUsers & PasswordHash & nvarchar(max) & Mật khẩu băm. \\
+AspNetUsers & SecurityStamp & nvarchar(max) & Dấu vết bảo mật Identity. \\
+AspNetUsers & AccessFailedCount & int & Số lần đăng nhập thất bại. \\
+AspNetRoles & Id & nvarchar(450) & Khóa chính role. \\
+AspNetRoles & Name & nvarchar(256) & Tên role. \\
+AspNetRoles & NormalizedName & nvarchar(256) & Tên role chuẩn hóa. \\
+AspNetUserRoles & UserId & nvarchar(450) & Liên kết user-role. \\
+AspNetUserRoles & RoleId & nvarchar(450) & Liên kết user-role. \\
+Categories & Id & int & Khóa chính danh mục. \\
+Categories & Name & nvarchar(200) & Tên danh mục. \\
+Categories & Slug & nvarchar(220) & Đường dẫn thân thiện, unique. \\
+Categories & Description & nvarchar(max) & Mô tả danh mục. \\
+Categories & IsActive & bit & Trạng thái hoạt động danh mục. \\
+Categories & CreatedAtUtc & datetime2 & Thời điểm tạo. \\
+Categories & UpdatedAtUtc & datetime2 & Thời điểm cập nhật gần nhất. \\
+Articles & Id & int & Khóa chính bài viết. \\
+Articles & CategoryId & int & FK đến Categories. \\
+Articles & Title & nvarchar(300) & Tiêu đề bài viết. \\
+Articles & Slug & nvarchar(320) & Slug bài viết, unique. \\
+Articles & Summary & nvarchar(max) & Tóm tắt bài viết. \\
+Articles & ContentHtml & nvarchar(max) & Nội dung HTML chi tiết. \\
+Articles & Status & nvarchar(20) & Trạng thái Draft/Published/Archived. \\
+Articles & PublishedAtUtc & datetime2 & Thời điểm xuất bản. \\
+Articles & ThumbnailUrl & nvarchar(max) & Ảnh đại diện bài viết. \\
+Articles & CreatedByUserId & nvarchar(450) & FK đến AspNetUsers. \\
+Articles & CreatedAtUtc & datetime2 & Thời điểm tạo bài. \\
+Articles & UpdatedAtUtc & datetime2 & Thời điểm cập nhật bài. \\
+Comments & Id & int & Khóa chính bình luận. \\
+Comments & ArticleId & int & FK đến Articles. \\
+Comments & AuthorName & nvarchar(200) & Tên người bình luận. \\
+Comments & AuthorEmail & nvarchar(256) & Email người bình luận. \\
+Comments & Content & nvarchar(2000) & Nội dung bình luận. \\
+Comments & IsApproved & bit & Cờ duyệt hiển thị công khai. \\
+Comments & CreatedAtUtc & datetime2 & Thời điểm gửi bình luận. \\
+Media & Id & int & Khóa chính media. \\
+Media & Title & nvarchar(300) & Tiêu đề media. \\
+Media & FileName & nvarchar(255) & Tên file lưu vật lý. \\
+Media & Url & nvarchar(500) & URL truy cập file. \\
+Media & ContentType & nvarchar(100) & MIME type file. \\
+Media & Size & bigint & Dung lượng file. \\
+Media & Topic & nvarchar(450) & Nhóm/chủ đề media. \\
+Media & UploadedByUserId & nvarchar(450) & FK người upload. \\
+Media & UploadedAtUtc & datetime2 & Thời điểm upload. \\
+Leaders & Id & int & Khóa chính lãnh đạo/cán bộ. \\
+Leaders & Name & nvarchar(200) & Họ tên. \\
+Leaders & Title & nvarchar(300) & Chức danh. \\
+Leaders & GroupKey & nvarchar(80) & Nhóm hiển thị (lanh-dao/can-bo/doan-the). \\
+Leaders & PhotoUrl & nvarchar(500) & Ảnh đại diện. \\
+Leaders & DisplayOrder & int & Thứ tự hiển thị. \\
+Leaders & IsActive & bit & Trạng thái hiển thị. \\
+Leaders & CreatedAtUtc & datetime2 & Thời điểm tạo. \\
+Leaders & UpdatedAtUtc & datetime2 & Thời điểm cập nhật. \\
+ServiceProcedures & Id & int & Khóa chính thủ tục. \\
+ServiceProcedures & Name & nvarchar(300) & Tên thủ tục hành chính. \\
+ServiceProcedures & Description & nvarchar(max) & Mô tả thủ tục. \\
+ServiceProcedures & RequiredDocuments & nvarchar(max) & Hồ sơ/giấy tờ yêu cầu. \\
+ServiceProcedures & ProcessingTime & nvarchar(max) & Thời gian xử lý. \\
+ServiceProcedures & Fee & nvarchar(max) & Lệ phí. \\
+ServiceProcedures & FormTemplateUrl & nvarchar(max) & Link mẫu đơn (nếu có). \\
+ServiceProcedures & IsActive & bit & Trạng thái cung cấp dịch vụ. \\
+ServiceProcedures & CreatedAtUtc & datetime2 & Thời điểm tạo. \\
+ServiceProcedures & UpdatedAtUtc & datetime2 & Thời điểm cập nhật. \\
+ServiceApplications & Id & int & Khóa chính hồ sơ dịch vụ. \\
+ServiceApplications & ServiceProcedureId & int & FK đến ServiceProcedures. \\
+ServiceApplications & ApplicantName & nvarchar(200) & Họ tên người nộp. \\
+ServiceApplications & ApplicantEmail & nvarchar(256) & Email người nộp. \\
+ServiceApplications & ApplicantPhone & nvarchar(20) & Số điện thoại. \\
+ServiceApplications & Address & nvarchar(max) & Địa chỉ liên hệ. \\
+ServiceApplications & Status & nvarchar(30) & Trạng thái xử lý hồ sơ. \\
+ServiceApplications & Note & nvarchar(max) & Ghi chú xử lý nội bộ/phản hồi. \\
+ServiceApplications & AttachmentUrl & nvarchar(max) & Link tệp đính kèm. \\
+ServiceApplications & SubmittedAtUtc & datetime2 & Thời điểm nộp hồ sơ. \\
+ServiceApplications & UpdatedAtUtc & datetime2 & Thời điểm cập nhật trạng thái. \\
+AuditLogs & Id & bigint & Khóa chính bản ghi log. \\
+AuditLogs & UserId & nvarchar(450) & Người thực hiện thao tác. \\
+AuditLogs & Action & nvarchar(200) & Hành động đã thực hiện. \\
+AuditLogs & EntityName & nvarchar(200) & Tên thực thể tác động. \\
+AuditLogs & EntityId & nvarchar(100) & Định danh thực thể tác động. \\
+AuditLogs & IpAddress & nvarchar(60) & Địa chỉ IP phát sinh thao tác. \\
+AuditLogs & CreatedAtUtc & datetime2 & Thời điểm ghi log. \\
+\bottomrule
+\end{longtable}
+
+\section*{Phụ lục E: Kịch bản demo vận hành}
+\addcontentsline{toc}{section}{Phụ lục E: Kịch bản demo vận hành}
+
+\subsection*{E.1 Kịch bản 1: Quản trị đăng bài và người dân đọc tin}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Admin đăng nhập portal bằng tài khoản hợp lệ.
+  \item Vào màn hình quản lý danh mục, tạo danh mục mới nếu cần.
+  \item Vào màn hình tạo bài viết, nhập tiêu đề, sinh slug, nhập nội dung, chọn status Published.
+  \item Upload ảnh đại diện, lưu bài.
+  \item Mở frontend công khai, vào mục Tin tức và xác nhận bài đã hiển thị.
+  \item Mở chi tiết bài bằng slug và xác nhận nội dung/ảnh đúng như dữ liệu đã nhập.
+\end{enumerate}
+
+\subsection*{E.2 Kịch bản 2: Người dân nộp hồ sơ trực tuyến}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Truy cập trang Dịch vụ hành chính trên frontend công khai.
+  \item Chọn thủ tục, nhập đầy đủ thông tin họ tên, email, số điện thoại, địa chỉ.
+  \item Gửi hồ sơ và nhận mã hồ sơ do hệ thống trả về.
+  \item Dùng mã hồ sơ để tra cứu trạng thái ngay trên giao diện dịch vụ.
+  \item Admin đăng nhập portal, vào màn hình Hồ sơ dịch vụ để xác nhận hồ sơ mới đã xuất hiện.
+  \item Admin cập nhật trạng thái hồ sơ sang Processing hoặc Approved.
+  \item Người dân tra cứu lại và thấy trạng thái đã được cập nhật.
+\end{enumerate}
+
+\subsection*{E.3 Kịch bản 3: Duyệt bình luận và hiển thị công khai}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Người dân vào chi tiết bài viết và gửi bình luận.
+  \item Kiểm tra API public comments: bình luận mới chưa xuất hiện do đang chờ duyệt.
+  \item Admin vào màn hình bình luận, duyệt bình luận vừa gửi.
+  \item Quay lại API public comments và giao diện chi tiết bài viết để kiểm tra bình luận đã hiển thị.
+\end{enumerate}
+
+\subsection*{E.4 Kịch bản 4: Upload media và hiển thị thư viện}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Admin vào màn hình media, chọn ảnh hợp lệ và upload.
+  \item Cập nhật tiêu đề/topic cho media vừa upload.
+  \item Mở trang Thư viện ở frontend công khai, kiểm tra ảnh xuất hiện đúng với metadata.
+  \item Thực hiện phân trang qua nhiều trang ảnh, đảm bảo không lỗi hiển thị.
+\end{enumerate}
+
+\subsection*{E.5 Kịch bản 5: Quản lý người dùng và phân quyền}
+\begin{enumerate}[leftmargin=1.1cm]
+  \item Admin tạo tài khoản mới role Viewer.
+  \item Đăng nhập bằng tài khoản Viewer và thử truy cập endpoint users admin.
+  \item Xác nhận endpoint users trả 403 do thiếu quyền Admin.
+  \item Đổi role tài khoản thành Editor rồi kiểm tra lại quyền trên các endpoint content/services.
+  \item Xác nhận hành vi quyền truy cập đúng theo định nghĩa role.
+\end{enumerate}
 
 \end{document}
