@@ -172,7 +172,7 @@ export default function AdminLeadersPage() {
               <div className="p-3 rounded-4" style={{ background: '#f6f8fb' }}>
                 <div className="small text-muted mb-2">Ảnh đại diện</div>
                 <div className="d-flex align-items-center gap-3 flex-wrap">
-                  <div className="image-preview sm" style={form.photoUrl ? { backgroundImage: `url(${resolveApiUrl(form.photoUrl)})` } : { background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)' }} />
+                  <div className="image-preview sm" style={form.photoUrl ? { backgroundImage: `url("${resolveApiUrl(form.photoUrl)}")` } : { background: 'linear-gradient(135deg, #dbeafe, #bfdbfe)' }} />
                   <div className="d-flex flex-column gap-2">
                     <input className="form-control" placeholder="Photo URL" value={form.photoUrl} onChange={(e) => setForm({ ...form, photoUrl: e.target.value })} />
                     <input className="form-control" type="file" accept="image/*" onChange={(e) => uploadPhoto(e.target.files?.[0])} disabled={uploading} />
@@ -204,7 +204,7 @@ export default function AdminLeadersPage() {
               <tbody>
                 {[...grouped.entries()].flatMap(([, arr]) => arr.map((x) => (
                   <tr key={x.id}>
-                    <td style={{ width: 80 }}><div className="image-preview xs" style={x.photoUrl ? { backgroundImage: `url(${resolveApiUrl(x.photoUrl)})` } : { background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)' }} /></td>
+                    <td style={{ width: 80 }}><div className="image-preview xs" style={x.photoUrl ? { backgroundImage: `url("${resolveApiUrl(x.photoUrl)}")` } : { background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)' }} /></td>
                     <td className="fw-semibold">{x.name}</td>
                     <td className="text-muted">{x.title}</td>
                     <td><span className="badge text-bg-light">{x.groupKey}</span></td>

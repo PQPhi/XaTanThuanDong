@@ -12,17 +12,20 @@ public sealed class UploadMediaRequest
 {
     public IFormFile File { get; set; } = default!;
     public string? Topic { get; set; }
+    public string? Title { get; set; }
 }
 
 public sealed class UpdateMediaRequest
 {
     public string? Topic { get; set; }
+    public string? Title { get; set; }
 }
 
 public sealed class ReplaceMediaRequest
 {
     public IFormFile File { get; set; } = default!;
     public string? Topic { get; set; }
+    public string? Title { get; set; }
 }
 
 [ApiController]
@@ -300,6 +303,7 @@ public class AdminContentController : ControllerBase
     {
         var file = req.File;
         var topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
+        var title = string.IsNullOrWhiteSpace(req.Title) ? null : req.Title.Trim();
 
         if (file is null || file.Length == 0) return BadRequest(new { message = "File không hợp lệ." });
 
@@ -317,10 +321,11 @@ public class AdminContentController : ControllerBase
         if (!byExt && !byType)
             return BadRequest(new { message = "Chỉ hỗ trợ ảnh JPG/PNG/WebP/GIF/BMP." });
 
-        var name = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{safeExt}";
-
         var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
         Directory.CreateDirectory(uploadsDir);
+
+        var preferredName = BuildPreferredFileName(file.FileName, safeExt);
+        var name = EnsureUniqueFileName(uploadsDir, preferredName);
 
         var fullPath = Path.Combine(uploadsDir, name);
         await using (var fs = System.IO.File.Create(fullPath))
@@ -332,6 +337,7 @@ public class AdminContentController : ControllerBase
 
         var m = new Media
         {
+            Title = title,
             FileName = name,
             Url = url,
             ContentType = file.ContentType,
@@ -343,7 +349,7 @@ public class AdminContentController : ControllerBase
         _db.Media.Add(m);
         await _db.SaveChangesAsync();
 
-        return Ok(new { id = m.Id, url = m.Url, fileName = m.FileName, contentType = m.ContentType, size = m.Size, topic = m.Topic });
+        return Ok(new { id = m.Id, title = m.Title, url = m.Url, fileName = m.FileName, contentType = m.ContentType, size = m.Size, topic = m.Topic });
     }
 
     [HttpPost("media/{id:int}/replace")]
@@ -374,7 +380,8 @@ public class AdminContentController : ControllerBase
         Directory.CreateDirectory(uploadsDir);
 
         var oldName = Path.GetFileName(e.Url);
-        var newName = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{safeExt}";
+        var preferredName = BuildPreferredFileName(file.FileName, safeExt);
+        var newName = EnsureUniqueFileName(uploadsDir, preferredName, oldName);
         var newPath = Path.Combine(uploadsDir, newName);
 
         await using (var fs = System.IO.File.Create(newPath))
@@ -388,12 +395,14 @@ public class AdminContentController : ControllerBase
         e.Size = file.Length;
         e.UploadedByUserId = user.Id;
         e.UploadedAtUtc = DateTime.UtcNow;
+        if (req.Title is not null)
+            e.Title = string.IsNullOrWhiteSpace(req.Title) ? null : req.Title.Trim();
         if (req.Topic is not null)
             e.Topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
 
         await _db.SaveChangesAsync();
 
-        if (!string.IsNullOrWhiteSpace(oldName))
+        if (!string.IsNullOrWhiteSpace(oldName) && !string.Equals(oldName, newName, StringComparison.OrdinalIgnoreCase))
         {
             var oldPath = Path.Combine(uploadsDir, oldName);
             if (System.IO.File.Exists(oldPath))
@@ -409,7 +418,7 @@ public class AdminContentController : ControllerBase
             }
         }
 
-        return Ok(new { id = e.Id, url = e.Url, fileName = e.FileName, contentType = e.ContentType, size = e.Size, topic = e.Topic, uploadedAtUtc = e.UploadedAtUtc });
+        return Ok(new { id = e.Id, title = e.Title, url = e.Url, fileName = e.FileName, contentType = e.ContentType, size = e.Size, topic = e.Topic, uploadedAtUtc = e.UploadedAtUtc });
     }
 
     [HttpGet("media")]
@@ -422,7 +431,7 @@ public class AdminContentController : ControllerBase
         var data = await q
             .OrderByDescending(x => x.UploadedAtUtc)
             .Take(100)
-            .Select(x => new { x.Id, x.FileName, x.Url, x.ContentType, x.Size, x.Topic, x.UploadedAtUtc })
+            .Select(x => new { x.Id, x.Title, x.FileName, x.Url, x.ContentType, x.Size, x.Topic, x.UploadedAtUtc })
             .ToListAsync();
 
         return Ok(data);
@@ -434,7 +443,10 @@ public class AdminContentController : ControllerBase
         var e = await _db.Media.FirstOrDefaultAsync(x => x.Id == id);
         if (e is null) return NotFound();
 
-        e.Topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
+        if (req.Topic is not null)
+            e.Topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
+        if (req.Title is not null)
+            e.Title = string.IsNullOrWhiteSpace(req.Title) ? null : req.Title.Trim();
         await _db.SaveChangesAsync();
         return NoContent();
     }
@@ -470,5 +482,38 @@ public class AdminContentController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    private static string BuildPreferredFileName(string originalFileName, string safeExt)
+    {
+        var baseName = Path.GetFileNameWithoutExtension(originalFileName) ?? string.Empty;
+        var invalid = Path.GetInvalidFileNameChars();
+
+        var cleaned = new string(baseName
+            .Select(ch => invalid.Contains(ch) ? '_' : ch)
+            .ToArray())
+            .Trim();
+
+        if (string.IsNullOrWhiteSpace(cleaned))
+            cleaned = "image";
+
+        return $"{cleaned}{safeExt}";
+    }
+
+    private static string EnsureUniqueFileName(string uploadsDir, string preferredFileName, string? reusableFileName = null)
+    {
+        var ext = Path.GetExtension(preferredFileName);
+        var baseName = Path.GetFileNameWithoutExtension(preferredFileName);
+        var candidate = preferredFileName;
+        var counter = 1;
+
+        while (System.IO.File.Exists(Path.Combine(uploadsDir, candidate)) &&
+               !string.Equals(candidate, reusableFileName, StringComparison.OrdinalIgnoreCase))
+        {
+            candidate = $"{baseName}_{counter}{ext}";
+            counter++;
+        }
+
+        return candidate;
     }
 }

@@ -119,12 +119,10 @@ export default function ContactPage() {
                 title="Google Maps"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                // Dùng định dạng embed chuẩn để tránh bị chuyển hướng sang trang Google Maps (có thể yêu cầu đăng nhập)
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sUBND%20X%C3%A3%20T%C3%A2n%20Thu%E1%BA%ADn%20%C4%90%C3%B4ng!5e0!3m2!1svi!2s!4v1"
+                src="https://www.google.com/maps?q=UBND%20x%C3%A3%20T%C3%A2n%20Thu%E1%BA%ADn%20%C4%90%C3%B4ng&output=embed"
                 allowFullScreen
               />
             </div>
-            <div className="text-muted small mt-2">Nếu cần chính xác, thay link maps theo địa chỉ UBND xã.</div>
           </div>
         </div>
       </div>

@@ -85,7 +85,7 @@ export default function GalleryPage() {
             <div className="nice-card bg-white">
               <div className="nice-card-img" style={{ backgroundImage: `url(${resolveApiUrl(x.url)})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               <div className="p-3">
-                <div className="fw-semibold text-truncate" title={x.fileName}>{x.fileName || `Hình ảnh #${x.id}`}</div>
+                <div className="fw-semibold text-truncate" title={x.title || `Hình ảnh #${x.id}`}>{x.title || `Hình ảnh #${x.id}`}</div>
                 <div className="text-muted small">Ngày đăng: {formatDate(x.uploadedAtUtc) || 'N/A'}</div>
               </div>
             </div>

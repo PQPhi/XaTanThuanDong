@@ -65,6 +65,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
         builder.Entity<Media>(e =>
         {
             e.HasIndex(x => x.Topic);
+            e.Property(x => x.Title).HasMaxLength(300);
             e.Property(x => x.FileName).HasMaxLength(255).IsRequired();
             e.Property(x => x.Url).HasMaxLength(500).IsRequired();
             e.Property(x => x.ContentType).HasMaxLength(100).IsRequired();

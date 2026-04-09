@@ -11,11 +11,19 @@ export default function AdminMediaPage() {
   const [notice, setNotice] = useState('')
   const [uploading, setUploading] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
+  const [uploadTitle, setUploadTitle] = useState('')
   const [savingId, setSavingId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
   const [replacingId, setReplacingId] = useState(null)
   const [editingTopic, setEditingTopic] = useState({})
+  const [editingTitle, setEditingTitle] = useState({})
   const uploadInputRef = useRef(null)
+
+  function suggestTitle(name) {
+    if (!name) return ''
+    const idx = name.lastIndexOf('.')
+    return idx > 0 ? name.slice(0, idx) : name
+  }
 
   async function load(nextFilterTopic = filterTopic) {
     setError('')
@@ -50,8 +58,10 @@ export default function AdminMediaPage() {
       const fd = new FormData()
       fd.append('file', selectedFile)
       if (uploadTopic) fd.append('topic', uploadTopic)
+      if (uploadTitle.trim()) fd.append('title', uploadTitle.trim())
       await api.post('/api/admin/content/media/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
       setSelectedFile(null)
+      setUploadTitle('')
       if (uploadInputRef.current) uploadInputRef.current.value = ''
       setNotice('Tải ảnh lên thành công.')
 
@@ -86,8 +96,9 @@ export default function AdminMediaPage() {
     try {
       await api.put(`/api/admin/content/media/${item.id}`, {
         topic: (editingTopic[item.id] ?? '').trim(),
+        title: (editingTitle[item.id] ?? '').trim(),
       })
-      setNotice('Cập nhật topic thành công.')
+      setNotice('Cập nhật thông tin ảnh thành công.')
       await load()
     } catch (err) {
       setError(err?.response?.data?.message || 'Không cập nhật được topic.')
@@ -97,7 +108,7 @@ export default function AdminMediaPage() {
   }
 
   async function removeItem(item) {
-    const ok = window.confirm(`Xóa ảnh ${item.fileName}?`)
+    const ok = window.confirm(`Xóa ảnh ${item.title || item.fileName}?`)
     if (!ok) return
 
     setError('')
@@ -124,6 +135,7 @@ export default function AdminMediaPage() {
       const fd = new FormData()
       fd.append('file', file)
       fd.append('topic', (editingTopic[item.id] ?? item.topic ?? '').trim())
+      fd.append('title', (editingTitle[item.id] ?? item.title ?? '').trim())
       await api.post(`/api/admin/content/media/${item.id}/replace`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
@@ -182,7 +194,11 @@ export default function AdminMediaPage() {
               type="file"
               accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.jfif,image/*"
               disabled={uploading}
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setSelectedFile(file)
+                setUploadTitle(suggestTitle(file?.name || ''))
+              }}
             />
             {selectedFile ? <div className="small text-muted mt-1">Đã chọn: {selectedFile.name}</div> : null}
             {uploading ? <div className="small text-muted mt-1">Đang upload...</div> : null}
@@ -194,6 +210,20 @@ export default function AdminMediaPage() {
               </button>
               <button className="btn btn-secondary" type="button" onClick={() => load()}>Tải lại</button>
             </div>
+          </div>
+        </div>
+
+        <div className="row g-2 mt-1">
+          <div className="col-12 col-md-9">
+            <label className="form-label">Tiêu đề ảnh</label>
+            <input
+              className="form-control"
+              value={uploadTitle}
+              onChange={(e) => setUploadTitle(e.target.value)}
+              placeholder="Ví dụ: Hoạt động tại xã"
+              disabled={uploading || !selectedFile}
+            />
+            <div className="form-text">Tiêu đề dùng để hiển thị cho người xem. Tên file vật lý sẽ do hệ thống quản lý.</div>
           </div>
         </div>
 
@@ -226,10 +256,19 @@ export default function AdminMediaPage() {
       <div className="media-grid">
         {items.map((x) => (
           <div key={x.id} className="media-card">
-            <div className="media-thumb" style={{ backgroundImage: `url(${resolveApiUrl(x.url)})` }} />
+            <div className="media-thumb" style={{ backgroundImage: `url("${resolveApiUrl(x.url)}")` }} />
             <div className="p-3">
-              <div className="small text-muted text-truncate" title={x.fileName}>{x.fileName}</div>
+              <div className="fw-semibold text-truncate" title={x.title || x.fileName}>{x.title || x.fileName}</div>
+              <div className="small text-muted text-truncate" title={x.fileName}>Tệp: {x.fileName}</div>
               <div className="small text-muted">Topic hiện tại: {x.topic || '(trống)'}</div>
+              <div className="d-flex gap-2 mt-2">
+                <input
+                  className="form-control form-control-sm"
+                  value={editingTitle[x.id] ?? x.title ?? ''}
+                  onChange={(e) => setEditingTitle((prev) => ({ ...prev, [x.id]: e.target.value }))}
+                  placeholder="Tiêu đề"
+                />
+              </div>
               <div className="d-flex gap-2 mt-2">
                 <input
                   className="form-control form-control-sm"

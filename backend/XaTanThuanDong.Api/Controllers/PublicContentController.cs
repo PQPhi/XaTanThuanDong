@@ -223,7 +223,7 @@ public class PublicContentController : ControllerBase
             .OrderByDescending(x => x.UploadedAtUtc)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new { x.Id, x.FileName, x.Url, x.Topic, x.UploadedAtUtc })
+            .Select(x => new { x.Id, x.Title, x.FileName, x.Url, x.Topic, x.UploadedAtUtc })
             .ToListAsync();
 
         return Ok(new { items, page, pageSize, total, totalPages });

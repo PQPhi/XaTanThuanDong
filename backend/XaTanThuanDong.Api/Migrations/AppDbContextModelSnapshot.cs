@@ -473,6 +473,10 @@ namespace XaTanThuanDong.Api.Migrations
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Title")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("Topic")
                         .HasColumnType("nvarchar(450)");
 

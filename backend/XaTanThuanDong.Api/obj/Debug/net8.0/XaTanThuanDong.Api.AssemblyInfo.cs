@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XaTanThuanDong.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dc6b622e8a559babcb75940313999402176f33e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d16d2edf30f5fc7ae6bc6a8fbbe06265b6af59d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("XaTanThuanDong.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XaTanThuanDong.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

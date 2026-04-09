@@ -248,7 +248,7 @@ export default function AdminArticleEditorPage({ mode }) {
             <div className="col-12 col-lg-6">
               <div className="small text-muted mb-2">Ảnh đại diện</div>
               <div className="image-duo">
-                <div className="image-preview" style={form.thumbnailUrl ? { backgroundImage: `url(${resolveApiUrl(form.thumbnailUrl)})` } : { background: 'linear-gradient(135deg, #dbeafe, #e0f2fe)' }} />
+                <div className="image-preview" style={form.thumbnailUrl ? { backgroundImage: `url("${resolveApiUrl(form.thumbnailUrl)}")` } : { background: 'linear-gradient(135deg, #dbeafe, #e0f2fe)' }} />
                 <div className="d-flex flex-column gap-2">
                   <input className="form-control" placeholder="Thumbnail URL" value={form.thumbnailUrl} onChange={(e) => setForm({ ...form, thumbnailUrl: e.target.value })} />
                   <input className="form-control" type="file" accept="image/*" disabled={uploading} onChange={(e) => uploadThumb(e.target.files?.[0])} />
@@ -259,7 +259,7 @@ export default function AdminArticleEditorPage({ mode }) {
             <div className="col-12 col-lg-6">
               <div className="small text-muted mb-2">Ảnh thứ 2 (tự chèn vào cuối nội dung khi lưu)</div>
               <div className="image-duo">
-                <div className="image-preview" style={form.secondaryImageUrl ? { backgroundImage: `url(${resolveApiUrl(form.secondaryImageUrl)})` } : { background: 'linear-gradient(135deg, #ede9fe, #f5f3ff)' }} />
+                <div className="image-preview" style={form.secondaryImageUrl ? { backgroundImage: `url("${resolveApiUrl(form.secondaryImageUrl)}")` } : { background: 'linear-gradient(135deg, #ede9fe, #f5f3ff)' }} />
                 <div className="d-flex flex-column gap-2">
                   <input className="form-control" placeholder="Secondary image URL" value={form.secondaryImageUrl} onChange={(e) => setForm({ ...form, secondaryImageUrl: e.target.value })} />
                   <input className="form-control" type="file" accept="image/*" disabled={uploading} onChange={(e) => uploadSecondary(e.target.files?.[0])} />
