@@ -1,0 +1,76 @@
+%%{init: {'flowchart': {'nodeSpacing': 40, 'rankSpacing': 60, 'curve': 'linear'}}}%%
+flowchart LR
+
+	%% Actors
+	Citizen["Nguoi dan"]
+	Admin["Admin"]
+	Editor["Editor"]
+	Viewer["Viewer"]
+
+	%% System boundary with horizontal grouping
+	subgraph SYS["He thong XaTanThuanDong"]
+		direction LR
+
+		subgraph PUB["Nhom use case cong khai"]
+			direction TB
+			UC1((Xem danh muc tin tuc))
+			UC2((Xem danh sach va chi tiet bai viet))
+			UC3((Tim kiem / goi y tu khoa))
+			UC4((Gui binh luan))
+			UC5((Xem thu tuc hanh chinh))
+			UC6((Nop ho so dich vu))
+			UC7((Tra cuu trang thai ho so))
+			UC8((Xem lanh dao / can bo))
+			UC9((Xem thu vien media))
+		end
+
+		subgraph ADM["Nhom use case quan tri"]
+			direction TB
+			UC10((Dang nhap nhan JWT))
+			UC11((Xem dashboard tong hop))
+			UC12((Quan ly danh muc, bai viet))
+			UC13((Quan ly lanh dao))
+			UC14((Duyet / xoa binh luan))
+			UC15((Quan ly media: upload, thay, cap nhat, xoa))
+			UC16((Quan ly thu tuc hanh chinh))
+			UC17((Quan ly ho so dich vu / cap nhat trang thai))
+			UC18((Quan ly nguoi dung va phan quyen))
+		end
+	end
+
+	%% Public interactions
+	Citizen --> UC1
+	Citizen --> UC2
+	Citizen --> UC3
+	Citizen --> UC4
+	Citizen --> UC5
+	Citizen --> UC6
+	Citizen --> UC7
+	Citizen --> UC8
+	Citizen --> UC9
+
+	%% Auth and dashboard permissions
+	Admin --> UC10
+	Editor --> UC10
+	Viewer --> UC10
+
+	Admin --> UC11
+	Editor --> UC11
+	Viewer --> UC11
+
+	%% Admin/Editor content and services permissions
+	Admin --> UC12
+	Editor --> UC12
+	Admin --> UC13
+	Editor --> UC13
+	Admin --> UC14
+	Editor --> UC14
+	Admin --> UC15
+	Editor --> UC15
+	Admin --> UC16
+	Editor --> UC16
+	Admin --> UC17
+	Editor --> UC17
+
+	%% Admin-only
+	Admin --> UC18
