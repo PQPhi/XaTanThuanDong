@@ -188,4 +188,44 @@ public class PublicContentController : ControllerBase
 
         return Ok(data);
     }
+
+    [HttpGet("media")]
+    public async Task<ActionResult<object>> GetMedia([FromQuery] string? topic, [FromQuery] int page = 1, [FromQuery] int pageSize = 9)
+    {
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 9;
+        if (pageSize > 48) pageSize = 48;
+
+        var q = _db.Media.AsNoTracking().AsQueryable();
+        if (!string.IsNullOrWhiteSpace(topic))
+        {
+            var normalizedTopic = topic.Trim();
+            if (string.Equals(normalizedTopic, "gallery", StringComparison.OrdinalIgnoreCase))
+            {
+                // Backward compatibility: old uploads may have empty topic.
+                q = q.Where(x => x.Topic == "gallery" || x.Topic == null || x.Topic == "");
+            }
+            else
+            {
+                q = q.Where(x => x.Topic == normalizedTopic);
+            }
+        }
+
+        Response.Headers.CacheControl = "no-store, no-cache, must-revalidate";
+        Response.Headers.Pragma = "no-cache";
+        Response.Headers.Expires = "0";
+
+        var total = await q.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)pageSize));
+        if (page > totalPages) page = totalPages;
+
+        var items = await q
+            .OrderByDescending(x => x.UploadedAtUtc)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new { x.Id, x.FileName, x.Url, x.Topic, x.UploadedAtUtc })
+            .ToListAsync();
+
+        return Ok(new { items, page, pageSize, total, totalPages });
+    }
 }

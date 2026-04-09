@@ -43,13 +43,28 @@ public static class SeedData
             await userManager.AddToRoleAsync(admin, "Admin");
 
         // sample categories
-        if (!await db.Categories.AnyAsync())
+        var categorySeeds = new[]
         {
-            db.Categories.AddRange(
-                new Category { Name = "Thông báo", Slug = "thong-bao", Description = "Thông báo của UBND xã" },
-                new Category { Name = "Hoạt động - Sự kiện", Slug = "hoat-dong-su-kien", Description = "Tin hoạt động địa phương" },
-                new Category { Name = "Văn bản", Slug = "van-ban", Description = "Văn bản chỉ đạo, điều hành" }
-            );
+            new Category { Name = "Thông báo", Slug = "thong-bao", Description = "Thông báo của UBND xã" },
+            new Category { Name = "Hoạt động - Sự kiện", Slug = "hoat-dong-su-kien", Description = "Tin hoạt động địa phương" },
+            new Category { Name = "Văn bản", Slug = "van-ban", Description = "Văn bản chỉ đạo, điều hành" },
+            new Category { Name = "Tin tức", Slug = "tin-tuc", Description = "Tin tức, hoạt động nổi bật" },
+            new Category { Name = "Tham quan", Slug = "tham-quan", Description = "Thông tin tham quan, du lịch địa phương" },
+            new Category { Name = "Đặc sản", Slug = "dac-san", Description = "Giới thiệu đặc sản địa phương" },
+        };
+
+        var existingCategorySlugs = await db.Categories
+            .AsNoTracking()
+            .Select(x => x.Slug)
+            .ToListAsync();
+
+        var missingCategories = categorySeeds
+            .Where(x => !existingCategorySlugs.Contains(x.Slug))
+            .ToList();
+
+        if (missingCategories.Count > 0)
+        {
+            db.Categories.AddRange(missingCategories);
             await db.SaveChangesAsync();
         }
 
@@ -352,6 +367,54 @@ public static class SeedData
                 }
             );
 
+            await db.SaveChangesAsync();
+        }
+
+        var seededArticleSlugs = await db.Articles
+            .AsNoTracking()
+            .Select(x => x.Slug)
+            .ToListAsync();
+
+        var tourismCat = await db.Categories.FirstOrDefaultAsync(x => x.Slug == "tham-quan");
+        var specialtyCat = await db.Categories.FirstOrDefaultAsync(x => x.Slug == "dac-san");
+
+        var extraArticles = new List<Article>();
+
+        if (tourismCat is not null && !seededArticleSlugs.Contains("tham-quan-song-nuoc-tan-thuan-dong"))
+        {
+            extraArticles.Add(new Article
+            {
+                CategoryId = tourismCat.Id,
+                Title = "Tham quan sông nước Tân Thuận Đông",
+                Slug = "tham-quan-song-nuoc-tan-thuan-dong",
+                Summary = "Gợi ý điểm đến gắn với cảnh quan miệt vườn và nhịp sống ven sông Tiền.",
+                ContentHtml = "<p>Xã Tân Thuận Đông có lợi thế cảnh quan sông nước, vườn cây ăn trái và không gian miệt vườn yên bình.</p><p>Đây là nội dung mẫu để trang <b>Tham quan</b> hiển thị ngay sau khi cài đặt.</p>",
+                Status = "Published",
+                PublishedAtUtc = DateTime.UtcNow.AddHours(-18),
+                ThumbnailUrl = "/hero/1.png",
+                CreatedByUserId = admin.Id
+            });
+        }
+
+        if (specialtyCat is not null && !seededArticleSlugs.Contains("dac-san-xa-tan-thuan-dong"))
+        {
+            extraArticles.Add(new Article
+            {
+                CategoryId = specialtyCat.Id,
+                Title = "Đặc sản nổi bật của Xã Tân Thuận Đông",
+                Slug = "dac-san-xa-tan-thuan-dong",
+                Summary = "Giới thiệu xoài, các sản vật và món ngon địa phương.",
+                ContentHtml = "<p>Nhắc đến địa phương, người dân thường nhớ đến xoài, lúa và những sản vật vườn nhà.</p><p>Bài viết mẫu giúp mục <b>Đặc sản</b> có nội dung hiển thị ngay.</p>",
+                Status = "Published",
+                PublishedAtUtc = DateTime.UtcNow.AddHours(-12),
+                ThumbnailUrl = "/hero/2.png",
+                CreatedByUserId = admin.Id
+            });
+        }
+
+        if (extraArticles.Count > 0)
+        {
+            db.Articles.AddRange(extraArticles);
             await db.SaveChangesAsync();
         }
 

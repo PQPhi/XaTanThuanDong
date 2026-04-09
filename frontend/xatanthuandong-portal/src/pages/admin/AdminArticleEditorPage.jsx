@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Editor } from '@tinymce/tinymce-react'
 import { api } from '../../lib/api'
 import { resolveApiUrl } from '../../lib/url'
 
@@ -166,7 +165,15 @@ export default function AdminArticleEditorPage({ mode }) {
 
       navigate('/admin/articles', { replace: true })
     } catch (err) {
-      setError(err?.response?.data?.message || 'Không lưu được bài viết.')
+      const serverMsg = err?.response?.data?.message
+      if (serverMsg) {
+        setError(serverMsg)
+      } else if (err?.response?.data?.errors) {
+        const messages = Object.values(err.response.data.errors).flat().filter(Boolean)
+        setError(messages.length ? messages.join(' ') : 'Không lưu được bài viết.')
+      } else {
+        setError('Không lưu được bài viết.')
+      }
     } finally {
       setSaving(false)
     }
@@ -223,22 +230,16 @@ export default function AdminArticleEditorPage({ mode }) {
 
         <div className="surface-card">
           <div className="fw-semibold mb-2">Nội dung bài viết</div>
-          <Editor
+          <textarea
+            className="form-control"
+            rows={20}
             value={form.contentHtml}
-            onEditorChange={(v) => setForm({ ...form, contentHtml: v })}
-            init={{
-              height: 520,
-              menubar: true,
-              plugins: 'lists link image table code preview autolink media',
-              toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image media | table | code | preview',
-              images_upload_handler: async (blobInfo) => {
-                const file = blobInfo.blob()
-                const url = await uploadImage(file, 'articles-content')
-                return url
-              },
-            }}
+            onChange={(e) => setForm({ ...form, contentHtml: e.target.value })}
+            placeholder="Nhập nội dung bài viết hoặc dán HTML vào đây. Ví dụ: <p>Nội dung...</p>"
           />
-          <div className="small text-muted mt-2">Kéo thả ảnh vào editor hoặc dùng khối upload bên dưới.</div>
+          <div className="small text-muted mt-2">
+            Bản này dùng trình soạn thảo đơn giản để tránh lỗi khóa API key. Bạn vẫn có thể dán HTML, chèn ảnh bằng URL hoặc dùng khối upload bên dưới.
+          </div>
         </div>
 
         <div className="surface-card">

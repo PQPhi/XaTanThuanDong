@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import NewsListPage from './pages/NewsListPage.jsx'
 import NewsDetailPage from './pages/NewsDetailPage.jsx'
+import TopicArticlesPage from './pages/TopicArticlesPage.jsx'
 import ServicesPage from './pages/ServicesPage.jsx'
 import GalleryPage from './pages/GalleryPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
@@ -34,6 +35,8 @@ export default function App() {
           <Route path="/gioi-thieu" element={<AboutPage />} />
           <Route path="/tin-tuc" element={<NewsListPage />} />
           <Route path="/tin-tuc/:slug" element={<NewsDetailPage />} />
+          <Route path="/tham-quan" element={<TopicArticlesPage title="Tham quan" badge="Du lịch" description="Thông tin điểm đến, trải nghiệm và địa danh địa phương." categorySlug="tham-quan" />} />
+          <Route path="/dac-san" element={<TopicArticlesPage title="Đặc sản" badge="Ẩm thực" description="Giới thiệu đặc sản, món ngon và sản vật địa phương." categorySlug="dac-san" />} />
           <Route path="/dich-vu" element={<ServicesPage />} />
           <Route path="/thu-vien" element={<GalleryPage />} />
           <Route path="/lien-he" element={<ContactPage />} />

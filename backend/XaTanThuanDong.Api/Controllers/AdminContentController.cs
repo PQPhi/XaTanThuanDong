@@ -14,6 +14,17 @@ public sealed class UploadMediaRequest
     public string? Topic { get; set; }
 }
 
+public sealed class UpdateMediaRequest
+{
+    public string? Topic { get; set; }
+}
+
+public sealed class ReplaceMediaRequest
+{
+    public IFormFile File { get; set; } = default!;
+    public string? Topic { get; set; }
+}
+
 [ApiController]
 [Route("api/admin/content")]
 [Authorize(Roles = "Admin,Editor")]
@@ -288,21 +299,24 @@ public class AdminContentController : ControllerBase
     public async Task<ActionResult<object>> UploadMedia([FromForm] UploadMediaRequest req)
     {
         var file = req.File;
-        var topic = req.Topic;
+        var topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
 
         if (file is null || file.Length == 0) return BadRequest(new { message = "File không hợp lệ." });
 
         var user = await _userManager.GetUserAsync(User);
         if (user is null) return Unauthorized();
 
-        var allowed = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
-        if (!allowed.Contains(file.ContentType))
-            return BadRequest(new { message = "Chỉ hỗ trợ ảnh JPG/PNG/WebP/GIF." });
-
         var ext = Path.GetExtension(file.FileName);
         if (string.IsNullOrWhiteSpace(ext)) ext = ".bin";
 
         var safeExt = ext.ToLowerInvariant();
+        var allowedExt = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".jfif" };
+        var allowedType = new[] { "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/bmp" };
+        var byExt = allowedExt.Contains(safeExt);
+        var byType = !string.IsNullOrWhiteSpace(file.ContentType) && allowedType.Contains(file.ContentType.ToLowerInvariant());
+        if (!byExt && !byType)
+            return BadRequest(new { message = "Chỉ hỗ trợ ảnh JPG/PNG/WebP/GIF/BMP." });
+
         var name = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{safeExt}";
 
         var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
@@ -332,6 +346,72 @@ public class AdminContentController : ControllerBase
         return Ok(new { id = m.Id, url = m.Url, fileName = m.FileName, contentType = m.ContentType, size = m.Size, topic = m.Topic });
     }
 
+    [HttpPost("media/{id:int}/replace")]
+    [RequestSizeLimit(20_000_000)]
+    public async Task<ActionResult<object>> ReplaceMedia([FromRoute] int id, [FromForm] ReplaceMediaRequest req)
+    {
+        var e = await _db.Media.FirstOrDefaultAsync(x => x.Id == id);
+        if (e is null) return NotFound();
+
+        var file = req.File;
+        if (file is null || file.Length == 0) return BadRequest(new { message = "File không hợp lệ." });
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user is null) return Unauthorized();
+
+        var ext = Path.GetExtension(file.FileName);
+        if (string.IsNullOrWhiteSpace(ext)) ext = ".bin";
+
+        var safeExt = ext.ToLowerInvariant();
+        var allowedExt = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".jfif" };
+        var allowedType = new[] { "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/bmp" };
+        var byExt = allowedExt.Contains(safeExt);
+        var byType = !string.IsNullOrWhiteSpace(file.ContentType) && allowedType.Contains(file.ContentType.ToLowerInvariant());
+        if (!byExt && !byType)
+            return BadRequest(new { message = "Chỉ hỗ trợ ảnh JPG/PNG/WebP/GIF/BMP." });
+
+        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+        Directory.CreateDirectory(uploadsDir);
+
+        var oldName = Path.GetFileName(e.Url);
+        var newName = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{safeExt}";
+        var newPath = Path.Combine(uploadsDir, newName);
+
+        await using (var fs = System.IO.File.Create(newPath))
+        {
+            await file.CopyToAsync(fs);
+        }
+
+        e.FileName = newName;
+        e.Url = $"/uploads/{newName}";
+        e.ContentType = file.ContentType;
+        e.Size = file.Length;
+        e.UploadedByUserId = user.Id;
+        e.UploadedAtUtc = DateTime.UtcNow;
+        if (req.Topic is not null)
+            e.Topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
+
+        await _db.SaveChangesAsync();
+
+        if (!string.IsNullOrWhiteSpace(oldName))
+        {
+            var oldPath = Path.Combine(uploadsDir, oldName);
+            if (System.IO.File.Exists(oldPath))
+            {
+                try
+                {
+                    System.IO.File.Delete(oldPath);
+                }
+                catch
+                {
+                    // Keep API successful even if cleanup fails.
+                }
+            }
+        }
+
+        return Ok(new { id = e.Id, url = e.Url, fileName = e.FileName, contentType = e.ContentType, size = e.Size, topic = e.Topic, uploadedAtUtc = e.UploadedAtUtc });
+    }
+
     [HttpGet("media")]
     public async Task<ActionResult<object>> ListMedia([FromQuery] string? topic)
     {
@@ -346,5 +426,49 @@ public class AdminContentController : ControllerBase
             .ToListAsync();
 
         return Ok(data);
+    }
+
+    [HttpPut("media/{id:int}")]
+    public async Task<ActionResult> UpdateMedia([FromRoute] int id, [FromBody] UpdateMediaRequest req)
+    {
+        var e = await _db.Media.FirstOrDefaultAsync(x => x.Id == id);
+        if (e is null) return NotFound();
+
+        e.Topic = string.IsNullOrWhiteSpace(req.Topic) ? null : req.Topic.Trim();
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("media/{id:int}")]
+    public async Task<ActionResult> DeleteMedia([FromRoute] int id)
+    {
+        var e = await _db.Media.FirstOrDefaultAsync(x => x.Id == id);
+        if (e is null) return NotFound();
+
+        _db.Media.Remove(e);
+        await _db.SaveChangesAsync();
+
+        if (!string.IsNullOrWhiteSpace(e.Url))
+        {
+            var name = Path.GetFileName(e.Url);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+                var fullPath = Path.Combine(uploadsDir, name);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    catch
+                    {
+                        // Keep API successful even if cleanup fails.
+                    }
+                }
+            }
+        }
+
+        return NoContent();
     }
 }
