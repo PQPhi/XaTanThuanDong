@@ -1,13 +1,12 @@
 \babel@toc {vietnamese}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Biểu đồ use case tổng quát của hệ thống}}{14}{figure.caption.1}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Sơ đồ kiến trúc tổng thể hệ thống (phiên bản đồ họa)}}{15}{figure.caption.2}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Lược đồ quan hệ dữ liệu (ERD)}}{17}{figure.caption.3}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Sơ đồ điều hướng chính của hai frontend}}{19}{figure.caption.4}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Sơ đồ luồng đăng nhập quản trị}}{20}{figure.caption.5}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Sơ đồ luồng nộp hồ sơ dịch vụ trực tuyến}}{20}{figure.caption.6}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Ảnh chụp cấu trúc thư mục dự án trong IDE}}{23}{figure.caption.7}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Giao diện trang chủ và danh sách tin tức (frontend công khai)}}{26}{figure.caption.8}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Giao diện nộp và tra cứu hồ sơ dịch vụ}}{26}{figure.caption.9}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Giao diện dashboard và biên tập bài viết trên portal quản trị}}{27}{figure.caption.10}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Kết quả kiểm thử responsive trên thiết bị di động}}{37}{figure.caption.11}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Kết quả kiểm thử upload media và hiển thị thư viện}}{37}{figure.caption.12}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Biểu đồ use case tổng quát của hệ thống (Mermaid source từ mã nguồn)}}{15}{figure.caption.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Lược đồ quan hệ dữ liệu (ERD)}}{18}{figure.caption.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Sơ đồ điều hướng chính của hai frontend}}{20}{figure.caption.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Sơ đồ luồng đăng nhập quản trị}}{20}{figure.caption.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Sơ đồ luồng nộp hồ sơ dịch vụ trực tuyến}}{21}{figure.caption.5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Ảnh chụp cấu trúc thư mục dự án trong IDE}}{24}{figure.caption.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Giao diện trang chủ và danh sách tin tức (frontend công khai)}}{27}{figure.caption.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Giao diện nộp và tra cứu hồ sơ dịch vụ}}{27}{figure.caption.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Giao diện dashboard và biên tập bài viết trên portal quản trị}}{28}{figure.caption.9}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Kết quả kiểm thử responsive trên thiết bị di động}}{38}{figure.caption.10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Kết quả kiểm thử upload media và hiển thị thư viện}}{38}{figure.caption.11}%

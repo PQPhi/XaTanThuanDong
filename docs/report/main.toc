@@ -17,7 +17,7 @@
 \contentsline {subsection}{\numberline {2.7}Xử lý lỗi tập trung bằng middleware}{10}{subsection.2.7}%
 \contentsline {subsection}{\numberline {2.8}Logging với Serilog}{10}{subsection.2.8}%
 \contentsline {subsection}{\numberline {2.9}Khái niệm SPA và React Router}{10}{subsection.2.9}%
-\contentsline {subsection}{\numberline {2.10}Nguyên lý bảo mật web áp dụng}{10}{subsection.2.10}%
+\contentsline {subsection}{\numberline {2.10}Nguyên lý bảo mật web áp dụng}{11}{subsection.2.10}%
 \contentsline {subsection}{\numberline {2.11}Khái niệm kiểm thử trong hệ thống web}{11}{subsection.2.11}%
 \contentsline {section}{\numberline {3}Phân tích thiết kế}{12}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Khảo sát yêu cầu chức năng}{12}{subsection.3.1}%
@@ -27,70 +27,71 @@
 \contentsline {subsection}{\numberline {3.3}Tác nhân và ca sử dụng chính}{13}{subsection.3.3}%
 \contentsline {subsubsection}{\numberline {3.3.1}Tác nhân hệ thống}{13}{subsubsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.2}Danh sách use case tiêu biểu}{13}{subsubsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.4}Thiết kế kiến trúc logic}{15}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Thiết kế module backend}{15}{subsection.3.5}%
-\contentsline {subsubsection}{\numberline {3.5.1}Phân lớp mã nguồn backend}{15}{subsubsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.4}Thiết kế kiến trúc logic}{16}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Thiết kế module backend}{16}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Phân lớp mã nguồn backend}{16}{subsubsection.3.5.1}%
 \contentsline {subsubsection}{\numberline {3.5.2}Danh sách controller và vai trò}{16}{subsubsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.6}Thiết kế dữ liệu và quan hệ thực thể}{16}{subsection.3.6}%
-\contentsline {subsubsection}{\numberline {3.6.1}Danh sách bảng nghiệp vụ}{16}{subsubsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6}Thiết kế dữ liệu và quan hệ thực thể}{17}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}Danh sách bảng nghiệp vụ}{17}{subsubsection.3.6.1}%
 \contentsline {subsubsection}{\numberline {3.6.2}Quan hệ dữ liệu chính}{17}{subsubsection.3.6.2}%
-\contentsline {subsubsection}{\numberline {3.6.3}Chỉ mục dữ liệu quan trọng}{17}{subsubsection.3.6.3}%
+\contentsline {subsubsection}{\numberline {3.6.3}Chỉ mục dữ liệu quan trọng}{18}{subsubsection.3.6.3}%
 \contentsline {subsection}{\numberline {3.7}Thiết kế API tổng quan}{18}{subsection.3.7}%
 \contentsline {subsubsection}{\numberline {3.7.1}Nhóm API công khai}{18}{subsubsection.3.7.1}%
-\contentsline {subsubsection}{\numberline {3.7.2}Nhóm API quản trị}{18}{subsubsection.3.7.2}%
-\contentsline {subsection}{\numberline {3.8}Thiết kế frontend}{18}{subsection.3.8}%
-\contentsline {subsubsection}{\numberline {3.8.1}Frontend công khai \texttt {xatanthuandong-web}}{18}{subsubsection.3.8.1}%
+\contentsline {subsubsection}{\numberline {3.7.2}Nhóm API quản trị}{19}{subsubsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.8}Thiết kế frontend}{19}{subsection.3.8}%
+\contentsline {subsubsection}{\numberline {3.8.1}Frontend công khai \texttt {xatanthuandong-web}}{19}{subsubsection.3.8.1}%
 \contentsline {subsubsection}{\numberline {3.8.2}Frontend portal \texttt {xatanthuandong-portal}}{19}{subsubsection.3.8.2}%
-\contentsline {subsection}{\numberline {3.9}Phân tích luồng nghiệp vụ điển hình}{19}{subsection.3.9}%
-\contentsline {subsubsection}{\numberline {3.9.1}Luồng đăng nhập admin}{19}{subsubsection.3.9.1}%
+\contentsline {subsection}{\numberline {3.9}Phân tích luồng nghiệp vụ điển hình}{20}{subsection.3.9}%
+\contentsline {subsubsection}{\numberline {3.9.1}Luồng đăng nhập admin}{20}{subsubsection.3.9.1}%
 \contentsline {subsubsection}{\numberline {3.9.2}Luồng nộp hồ sơ dịch vụ}{20}{subsubsection.3.9.2}%
-\contentsline {subsubsection}{\numberline {3.9.3}Luồng duyệt bình luận}{20}{subsubsection.3.9.3}%
+\contentsline {subsubsection}{\numberline {3.9.3}Luồng duyệt bình luận}{21}{subsubsection.3.9.3}%
 \contentsline {subsection}{\numberline {3.10}Rủi ro kỹ thuật và giải pháp}{21}{subsection.3.10}%
-\contentsline {section}{\numberline {4}Cài đặt}{22}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Môi trường và công cụ}{22}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Cấu trúc thư mục triển khai}{22}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Cài đặt backend chi tiết}{23}{subsection.4.3}%
-\contentsline {subsubsection}{\numberline {4.3.1}Đăng ký dịch vụ trong Program}{23}{subsubsection.4.3.1}%
-\contentsline {subsubsection}{\numberline {4.3.2}Pipeline middleware}{23}{subsubsection.4.3.2}%
-\contentsline {subsubsection}{\numberline {4.3.3}DbContext và ràng buộc dữ liệu}{24}{subsubsection.4.3.3}%
-\contentsline {subsubsection}{\numberline {4.3.4}Seed dữ liệu}{24}{subsubsection.4.3.4}%
-\contentsline {subsubsection}{\numberline {4.3.5}Cài đặt chức năng content admin}{24}{subsubsection.4.3.5}%
-\contentsline {subsubsection}{\numberline {4.3.6}Cài đặt chức năng services admin}{25}{subsubsection.4.3.6}%
-\contentsline {subsubsection}{\numberline {4.3.7}Cài đặt chức năng users admin}{25}{subsubsection.4.3.7}%
-\contentsline {subsection}{\numberline {4.4}Cài đặt frontend công khai}{25}{subsection.4.4}%
-\contentsline {subsubsection}{\numberline {4.4.1}Khởi tạo ứng dụng và route}{25}{subsubsection.4.4.1}%
-\contentsline {subsubsection}{\numberline {4.4.2}Trang chủ và tin tức}{25}{subsubsection.4.4.2}%
-\contentsline {subsubsection}{\numberline {4.4.3}Trang dịch vụ}{26}{subsubsection.4.4.3}%
-\contentsline {subsubsection}{\numberline {4.4.4}Trang thư viện media}{26}{subsubsection.4.4.4}%
-\contentsline {subsection}{\numberline {4.5}Cài đặt frontend portal quản trị}{26}{subsection.4.5}%
-\contentsline {subsubsection}{\numberline {4.5.1}Điều hướng và bảo vệ route}{26}{subsubsection.4.5.1}%
-\contentsline {subsubsection}{\numberline {4.5.2}Màn hình quản lý bài viết}{27}{subsubsection.4.5.2}%
-\contentsline {subsubsection}{\numberline {4.5.3}Màn hình quản lý danh mục, bình luận, thủ tục}{27}{subsubsection.4.5.3}%
-\contentsline {subsection}{\numberline {4.6}Cấu hình triển khai và môi trường}{27}{subsection.4.6}%
-\contentsline {subsubsection}{\numberline {4.6.1}Backend}{27}{subsubsection.4.6.1}%
-\contentsline {subsubsection}{\numberline {4.6.2}Frontend}{28}{subsubsection.4.6.2}%
-\contentsline {subsection}{\numberline {4.7}Danh mục package chính}{28}{subsection.4.7}%
-\contentsline {subsection}{\numberline {4.8}Mô tả endpoint chi tiết}{28}{subsection.4.8}%
-\contentsline {subsection}{\numberline {4.9}Mẫu đoạn mã tiêu biểu}{30}{subsection.4.9}%
-\contentsline {subsubsection}{\numberline {4.9.1}TokenService}{30}{subsubsection.4.9.1}%
-\contentsline {subsubsection}{\numberline {4.9.2}GlobalExceptionMiddleware}{30}{subsubsection.4.9.2}%
-\contentsline {subsubsection}{\numberline {4.9.3}Public nộp hồ sơ}{30}{subsubsection.4.9.3}%
-\contentsline {subsection}{\numberline {4.10}Hướng dẫn chạy hệ thống}{31}{subsection.4.10}%
-\contentsline {section}{\numberline {5}Kiểm thử}{32}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Chiến lược kiểm thử}{32}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Tiêu chí chấp nhận}{32}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Ma trận test case chi tiết}{32}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Kiểm thử giao diện và trải nghiệm}{36}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Đánh giá chất lượng hiện tại}{37}{subsection.5.5}%
-\contentsline {subsection}{\numberline {5.6}Đề xuất cải tiến kiểm thử}{37}{subsection.5.6}%
-\contentsline {section}{\numberline {6}Kết luận}{39}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Kết quả đạt được}{39}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Mức độ đáp ứng yêu cầu đề tài}{39}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Hạn chế hiện tại}{39}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Hướng phát triển tương lai}{39}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}Tổng kết}{40}{subsection.6.5}%
-\contentsline {section}{Phụ lục A: Danh sách tệp mã nguồn chính}{41}{subsection.6.5}%
-\contentsline {section}{Phụ lục B: Mapping yêu cầu - module}{42}{table.11}%
-\contentsline {section}{Phụ lục C: Nhật ký triển khai đề xuất}{42}{table.12}%
-\contentsline {section}{Phụ lục D: Từ điển dữ liệu chi tiết}{43}{table.13}%
-\contentsline {section}{Phụ lục E: Kịch bản demo vận hành}{46}{table.14}%
+\contentsline {section}{\numberline {4}Cài đặt}{23}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Môi trường và công cụ}{23}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Cấu trúc thư mục triển khai}{23}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Cài đặt backend chi tiết}{24}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Đăng ký dịch vụ trong Program}{24}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Pipeline middleware}{24}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.3}DbContext và ràng buộc dữ liệu}{25}{subsubsection.4.3.3}%
+\contentsline {subsubsection}{\numberline {4.3.4}Seed dữ liệu}{25}{subsubsection.4.3.4}%
+\contentsline {subsubsection}{\numberline {4.3.5}Cài đặt chức năng content admin}{25}{subsubsection.4.3.5}%
+\contentsline {subsubsection}{\numberline {4.3.6}Cài đặt chức năng services admin}{26}{subsubsection.4.3.6}%
+\contentsline {subsubsection}{\numberline {4.3.7}Cài đặt chức năng users admin}{26}{subsubsection.4.3.7}%
+\contentsline {subsection}{\numberline {4.4}Cài đặt frontend công khai}{26}{subsection.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.1}Khởi tạo ứng dụng và route}{26}{subsubsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.2}Trang chủ và tin tức}{26}{subsubsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.3}Trang dịch vụ}{27}{subsubsection.4.4.3}%
+\contentsline {subsubsection}{\numberline {4.4.4}Trang thư viện media}{27}{subsubsection.4.4.4}%
+\contentsline {subsection}{\numberline {4.5}Cài đặt frontend portal quản trị}{27}{subsection.4.5}%
+\contentsline {subsubsection}{\numberline {4.5.1}Điều hướng và bảo vệ route}{27}{subsubsection.4.5.1}%
+\contentsline {subsubsection}{\numberline {4.5.2}Màn hình quản lý bài viết}{28}{subsubsection.4.5.2}%
+\contentsline {subsubsection}{\numberline {4.5.3}Màn hình quản lý danh mục, bình luận, thủ tục}{28}{subsubsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.6}Cấu hình triển khai và môi trường}{28}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}Backend}{28}{subsubsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.2}Frontend}{29}{subsubsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.7}Danh mục package chính}{29}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Mô tả endpoint chi tiết}{29}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.9}Mẫu đoạn mã tiêu biểu}{31}{subsection.4.9}%
+\contentsline {subsubsection}{\numberline {4.9.1}TokenService}{31}{subsubsection.4.9.1}%
+\contentsline {subsubsection}{\numberline {4.9.2}GlobalExceptionMiddleware}{31}{subsubsection.4.9.2}%
+\contentsline {subsubsection}{\numberline {4.9.3}Public nộp hồ sơ}{31}{subsubsection.4.9.3}%
+\contentsline {subsection}{\numberline {4.10}Hướng dẫn chạy hệ thống}{32}{subsection.4.10}%
+\contentsline {section}{\numberline {5}Kiểm thử}{33}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Chiến lược kiểm thử}{33}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Tiêu chí chấp nhận}{33}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Ma trận test case chi tiết}{33}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Kiểm thử giao diện và trải nghiệm}{37}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Đánh giá chất lượng hiện tại}{38}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Đề xuất cải tiến kiểm thử}{38}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Kết luận}{40}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Kết quả đạt được}{40}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Mức độ đáp ứng yêu cầu đề tài}{40}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Hạn chế hiện tại}{40}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Hướng phát triển tương lai}{40}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Tổng kết}{41}{subsection.6.5}%
+\contentsline {section}{Phụ lục A.1: Danh sách tệp mã nguồn}{42}{subsection.6.5}%
+\contentsline {section}{Phụ lục A.2: Vai trò các tệp mã nguồn}{42}{table.11}%
+\contentsline {section}{Phụ lục B: Mapping yêu cầu - module}{43}{table.12}%
+\contentsline {section}{Phụ lục C: Nhật ký triển khai đề xuất}{44}{table.13}%
+\contentsline {section}{Phụ lục D: Từ điển dữ liệu chi tiết}{45}{table.14}%
+\contentsline {section}{Phụ lục E: Kịch bản demo vận hành}{48}{table.15}%
